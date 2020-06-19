@@ -31,6 +31,11 @@ from collections import deque
 from statistics import mean
 import time
 
+from itertools import chain
+from functools import reduce
+from copy import deepcopy
+
+
 # Authorship information
 __author__  = "Pov Cécile"
 __credits__ = ["Tabourier Lionel","Tarissan Fabien"]
@@ -49,106 +54,9 @@ class Graph:
         edges (list of list): list of edges.
 
     """
-    def __init__(self, vertices, edges):
-        self.vertices = vertices
-        self.edges = edges
+    def __init__(self, nb_sets):
+        nb_sets = all
 
-
-    @classmethod
-    def erdos_renyi(self,n,p):
-        """
-        Constructs an instance of the class using Erdos-Renyi model.
-        Args:
-            n (int)  : number of vertices.
-            p (float): probability to connect any pairs of vertices. Must be between 0 and 1.
-
-        Returns:
-            Graph : A instance of the class.
-        """
-        assert p>=0 and p<=1, "The probability p must be between 0 and 1."
-        id_vertices = list(range(0, n))
-        possible_edges = list(itertools.combinations(id_vertices,2))
-
-        nb_trials = int(n*(n-1)/2)  # number of trials, probability of each trial
-        flips = np.random.binomial(1, p, nb_trials)
-
-        dictionary = dict(zip(possible_edges, flips))
-        edges = [k for (k,v) in dictionary.items() if v == 1]
-
-        return self(id_vertices, edges)
-
-
-    @classmethod
-    def barabasi_albert(self, G_start, t):
-        """
-        Constructs an instance of the class using Barabasi-Albert model.
-        Args:
-            G_start (Graph) : the initial connected graph.
-            t (int): the number of vertices to add.
-
-        Returns:
-            Graph : A instance of the class.
-        """
-        G = self(G_start.vertices[:], G_start.edges[:])
-        nb_vertices = len(G.vertices)
-
-        for i in range (t):
-            new_vertex_id = len(G.vertices)
-            new_edges = []
-            degrees_all = G.get_degrees_sum()
-
-            for vertex in G.vertices:
-                degree = len(G.get_neighbors(vertex))
-                probability = degree/degrees_all
-                flip = np.random.binomial(1, probability, 1)
-                if flip == 1:
-                    new_edges.append((new_vertex_id, vertex))
-                #print(new_vertex_id, vertex, probability, flip)
-
-            G.vertices.append(new_vertex_id)
-            G.edges.extend(new_edges)
-
-        return G
-
-
-    @staticmethod
-    def ring_lattice_edges(vertices, k):
-        """
-            Return all the edges for a defined regular ring lattice.
-            Args:
-                vertices (list<int>) : list of vertices.
-                k (int) : each vertex is connected to its k nearest neighbors.
-
-            Returns:
-                generator : A generator containing all the edges of the regular ring lattice.
-        """
-        halfk = k//2
-        n = len(vertices)
-        for i, u in enumerate(vertices):
-            for j in range(i+1, i+halfk+1):
-                v = vertices[j % n] #edges for "next" neighbors
-                yield [u, v]
-
-
-    @classmethod
-    def ring_lattice(self, n, k):
-        """
-        Constructs a regular ring lattice.
-        Args:
-            n (int) : number of vertices.
-            k (int) : each vertex is connected to its k nearest neighbors.
-
-        Returns:
-            Graph : A regular ring lattice.
-        """
-        assert k%2 == 0, "k (number of nearest neighbors) must be an even number."
-        assert k<=n, "k (number of nearest neighbors) must be equal or less than n (number of vertices)."
-
-        vertices = list(range(n))
-        edges = list(self.ring_lattice_edges(vertices, k))
-        print(type(self.ring_lattice_edges(vertices, k)))
-        assert len(edges) == n*k/2, "Incorrect number of edges."
-        return self(vertices,edges)
 
 
     @classmethod
@@ -197,31 +105,23 @@ class Graph:
         plt.show()
 
 
-    def get_degree(self,vertex):
+    def get_degree(self,vertex,set1):
         """
         Returns the degree of the given vertex.
         """
-        flatten_edges = [item for sublist in self.edges for item in sublist]
-        degree = flatten_edges.count(vertex)
-        return degree
+        return len(set1.get(vertex))
 
 
-    def get_all_degrees(self):
+    def get_all_degrees(self,set1):
         """
         Returns a dictionary with vertices id as keys, and degrees as values.
 
         """
-        flatten_edges = [item for sublist in self.edges for item in sublist]
-
-        degrees_all = {} # dict (vertex_id:degree). Counting occurences in flatten_edges would have skipped 0-degree vertices.
-        for vertex in self.vertices:
-            degree = flatten_edges.count(vertex)
-            degrees_all[vertex] = degree
-
-        return degrees_all
+        return {key: len(value) for key, value in set1.items()}
 
 
-    def get_degree_mean(self):
+
+    def get_degree_mean(self,set):
         return np.mean(list(self.get_all_degrees().values()))
 
 
@@ -231,11 +131,12 @@ class Graph:
     def get_degree_min(self):
                 return min(list(self.get_all_degrees().values()))
 
-    def get_degree_distribution(self, plot = 1):
+
+    def get_degree_distribution(self, set1, plot = 1):
         """
         Returns a dictionary with degrees as keys, and number of vertices that have this degree as values.
         """
-        degrees_all = self.get_all_degrees()
+        degrees_all = self.get_all_degrees(set1)
         distribution = Counter(degrees_all.values()) # return a dict (degree:count)
 
         if plot == 1:
@@ -247,7 +148,7 @@ class Graph:
         return distribution
 
 
-    def get_neighbors(self,vertex):
+    def get_neighbors(self,vertex,set1):
         """
         Returns a list containing all the neighbors of the given vertex.
         Args:
@@ -255,13 +156,14 @@ class Graph:
         Returns:
             int: degree of the vertex.
         """
-        adjacent_edges = [list(edge) for edge in self.edges if vertex in edge]
-        flatten_edges = [item for sublist in adjacent_edges for item in sublist]
-        neighbors = [i for i in flatten_edges if i != vertex]
-        return neighbors
+        # adjacent_edges = [list(edge) for edge in self.edges if vertex in edge]
+        # flatten_edges = [item for sublist in adjacent_edges for item in sublist]
+        # neighbors = [i for i in flatten_edges if i != vertex]
+        # return neighbors
+        return set1.get(vertex)
 
 
-    def get_clustering_coeff(self):
+    def get_clustering_coeff(self,set1):
         """
         Returns the clustering coefficient CC(G) of a graph G.
         For all v vertices, where degree(v) > 1:
@@ -271,33 +173,29 @@ class Graph:
                    Kv*(Kv-1) the max number of possible interconnections between neighbors of v
         CC(G) is the mean of all Cc(v)
         """
+
         CCV_all = [] #list to store all local CC
 
-        for vertex in self.vertices:
-            counts = self.get_all_degrees()
-            kv = counts.get(vertex)
+        for vertex, kv in self.get_all_degrees(set1).items():
+            if kv > 1:
+                neighbors = self.get_neighbors(vertex,set1)
+                nv = sum( len(self.get_neighbors(neighbor,set1) & neighbors) for neighbor in neighbors)/2 #nb edges between neighbors
+                CC_local = (2*nv)/(kv*(kv-1))
+                CCV_all.append(CC_local)
 
-            if kv > 1: # we only consider vertices with degree > 1
-                neighbors = self.get_neighbors(vertex)
-                edges_between_neigh = [elt for elt in self.edges if elt[0] in neighbors and elt[1] in neighbors] # both extremities are neighbors
-                nv = len(edges_between_neigh)
-                CCV = (2*nv)/(kv*(kv-1))
-                CCV_all.append(CCV)
-
-        #print(CCV_all)
-        CCG = np.mean(CCV_all)
-        return CCG
+        return np.mean(CCV_all)
 
 
-    def bfs(self, source):
+
+
+    def bfs(self, source,set1):
         queue = deque([source])
         level = {source: 0}
         parent = {source: None}
 
         while queue:
             current_vertex = queue.popleft()
-    #         for n in graph[v]:
-            for neighbor in self.get_neighbors(current_vertex):
+            for neighbor in self.get_neighbors(current_vertex,set1):
                 if neighbor not in level:
                     queue.append(neighbor)
                     level[neighbor] = level[current_vertex] + 1
@@ -305,21 +203,21 @@ class Graph:
         return level, parent
 
 
-    def get_diameter(self):
+    def get_diameter(self,set1):
         """
         Returns the diameter of the graph.
         The diameter is the longest shortest path between any pair of vertices of the graph.
         """
         max_global = float('-inf')
-        for vertex in self.vertices:
-            distances,_ = self.bfs(vertex)
+        for vertex in set1:
+            distances,_ = self.bfs(vertex,set1)
             max_local = max(distances.values())
             if max_global < max_local:
                 max_global = max_local
         return max_global
 
 
-    def get_path_length(self):
+    def get_path_length(self,set1):
         """
         Returns the mean path length of the graph.
         The path length is the number of edges in the shortest path between 2 vertices,
@@ -327,123 +225,123 @@ class Graph:
         """
         distances_sum = 0
         nb_elts = 0
-        for elt in self.vertices:
-            distances,_ = self.bfs(elt)
+        for elt in set1:
+            distances,_ = self.bfs(elt,set1)
             distances_sum += sum(distances.values())
             nb_elts += len(distances) -1 # distance to current element = 0
 
         return distances_sum/nb_elts
 
 
-    def get_degrees_sum(self):
+    def get_degrees_sum(self,set1):
         """
         Returns the sum of all degrees, for a simple graph (without loops).
         """
-        return len(self.edges)*2
+        return len(list(chain.from_iterable(set1.values())))
 
 
-    def depth_first_search(self, vertex, cc_vertex, visited):
-        """
-        Computes depth-first search (DFS) algorithm starting from a vertex.
-        """
-        visited.append(vertex)
-        cc_vertex.append(vertex)
-
-        #print(cc_vertex)
-        for neighbor in self.get_neighbors(vertex):
-            if neighbor not in visited:
-                cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited)
-        return cc_vertex
-
-
-    def get_connected_components(self):
-        """
-        Returns a list of list containing the connected components.
-        [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
-        """
-
-        visited = []
-        cc_all = []
-
-        for vertex in self.vertices:
-            if vertex not in visited:
-                cc_vertex = []
-                cc_all.append(self.depth_first_search(vertex, cc_vertex, visited))
-        return cc_all
+    # def depth_first_search(self, vertex, cc_vertex, visited):
+    #     """
+    #     Computes depth-first search (DFS) algorithm starting from a vertex.
+    #     """
+    #     visited.append(vertex)
+    #     cc_vertex.append(vertex)
+    #
+    #     #print(cc_vertex)
+    #     for neighbor in self.get_neighbors(vertex):
+    #         if neighbor not in visited:
+    #             cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited)
+    #     return cc_vertex
 
 
-    @staticmethod
-    def get_symmetric_edges(edges):
-        """
-        Returns the symmetric edges of the graph.
-        """
-        return [edge[::-1] for edge in edges]
-
-
-    def get_assortativity(self):
-        """
-        Returns the assortativity coefficient of the graph.
-        This coefficient is the Pearson correlation coefficient of degree between pairs of linked nodes.
-        """
-        degrees_all = self.get_all_degrees()
-        edges_symmetry = Graph.get_symmetric_edges(self.edges)
-        edges_double = self.edges + edges_symmetry
-
-        edges_degree = list(map(lambda v:(degrees_all.get(v[0]),degrees_all.get(v[1])),edges_double))
-
-        edges_degree = np.array(edges_degree)
-        x = edges_degree[:,0]
-        y = edges_degree[:,1]
-
-        x_mean_deviation = x.mean()
-        y_mean_deviation = y.mean()
-
-        x_deviation = x-x_mean_deviation
-        y_deviation = y-y_mean_deviation
-        # print(x_deviation)
-        # print(y_deviation)
-        deviation_product_sum = (x_deviation*y_deviation).sum()
-        deviation_squared_product_sum = np.sqrt((x_deviation**2).sum()*(y_deviation**2).sum())
-
-        #print(deviation_product_sum)
-        #print(deviation_squared_product_sum)
-        assortativity = deviation_product_sum/deviation_squared_product_sum
-
-        return assortativity
-
-
-    def analyze(self):
-        start_time = time.time()
-        self.get_degree_distribution()
-        features = ["nb_vertices",
-                    "nb_edges",
-                    "clustering_coeff",
-                    "connected_components",
-                    "diameter",
-                    "path_length",
-                    "assortativity",
-                    "avg_degree",
-                    "degrees_sum",
-                    "degree_mean",
-                    "degree_min",
-                    "degree_max"]
-
-        df = pd.DataFrame(columns = {"value":""})
-
-        df.loc["nb_vertices"] = len(self.vertices)
-        df.loc["nb_edges"] = len(self.edges)
-        df.loc["clustering_coeff"] = self.get_clustering_coeff()
-        df.loc["connected_components"] = len(self.get_connected_components())
-        df.loc["diameter"] = self.get_diameter()
-        df.loc["Assortativity"] = self.get_assortativity()
-        df.loc["path_length"] = self.get_path_length()
-        df.loc["degree_avg"] = self.get_degree_mean()
-        df.loc["degree_sum"] = self.get_degrees_sum()
-        df.loc["degree_min"] = self.get_degree_min()
-        df.loc["degree_max"] = self.get_degree_max()
-        print("--- %s secconds ---" % (time.time() - start_time))
-
-        return df
+    # def get_connected_components(self):
+    #     """
+    #     Returns a list of list containing the connected components.
+    #     [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
+    #     """
+    #
+    #     visited = []
+    #     cc_all = []
+    #
+    #     for vertex in self.vertices:
+    #         if vertex not in visited:
+    #             cc_vertex = []
+    #             cc_all.append(self.depth_first_search(vertex, cc_vertex, visited))
+    #     return cc_all
+    #
+    #
+    # @staticmethod
+    # def get_symmetric_edges(edges):
+    #     """
+    #     Returns the symmetric edges of the graph.
+    #     """
+    #     return [edge[::-1] for edge in edges]
+    #
+    #
+    # def get_assortativity(self):
+    #     """
+    #     Returns the assortativity coefficient of the graph.
+    #     This coefficient is the Pearson correlation coefficient of degree between pairs of linked nodes.
+    #     """
+    #     degrees_all = self.get_all_degrees()
+    #     edges_symmetry = Graph.get_symmetric_edges(self.edges)
+    #     edges_double = self.edges + edges_symmetry
+    #
+    #     edges_degree = list(map(lambda v:(degrees_all.get(v[0]),degrees_all.get(v[1])),edges_double))
+    #
+    #     edges_degree = np.array(edges_degree)
+    #     x = edges_degree[:,0]
+    #     y = edges_degree[:,1]
+    #
+    #     x_mean_deviation = x.mean()
+    #     y_mean_deviation = y.mean()
+    #
+    #     x_deviation = x-x_mean_deviation
+    #     y_deviation = y-y_mean_deviation
+    #     # print(x_deviation)
+    #     # print(y_deviation)
+    #     deviation_product_sum = (x_deviation*y_deviation).sum()
+    #     deviation_squared_product_sum = np.sqrt((x_deviation**2).sum()*(y_deviation**2).sum())
+    #
+    #     #print(deviation_product_sum)
+    #     #print(deviation_squared_product_sum)
+    #     assortativity = deviation_product_sum/deviation_squared_product_sum
+    #
+    #     return assortativity
+    #
+    #
+    # def analyze(self):
+    #     start_time = time.time()
+    #     self.get_degree_distribution()
+    #     features = ["nb_vertices",
+    #                 "nb_edges",
+    #                 "clustering_coeff",
+    #                 "connected_components",
+    #                 "diameter",
+    #                 "path_length",
+    #                 "assortativity",
+    #                 "avg_degree",
+    #                 "degrees_sum",
+    #                 "degree_mean",
+    #                 "degree_min",
+    #                 "degree_max"]
+    #
+    #     df = pd.DataFrame(columns = {"value":""})
+    #
+    #     df.loc["nb_vertices"] = len(self.vertices)
+    #     df.loc["nb_edges"] = len(self.edges)
+    #     df.loc["clustering_coeff"] = self.get_clustering_coeff()
+    #     df.loc["connected_components"] = len(self.get_connected_components())
+    #     df.loc["diameter"] = self.get_diameter()
+    #     df.loc["Assortativity"] = self.get_assortativity()
+    #     df.loc["path_length"] = self.get_path_length()
+    #     df.loc["degree_avg"] = self.get_degree_mean()
+    #     df.loc["degree_sum"] = self.get_degrees_sum()
+    #     df.loc["degree_min"] = self.get_degree_min()
+    #     df.loc["degree_max"] = self.get_degree_max()
+    #     print("--- %s secconds ---" % (time.time() - start_time))
+    #
+    #     return df
 
 
     def test(self):
@@ -454,103 +352,98 @@ class Graph:
     # OLD FUNCTIONS
     #---------------------------------------------------------------------------
 
-    # def get_all_distances(self):
+    # @classmethod
+    # def erdos_renyi(self,n,p):
     #     """
-    #     Finds all the shortest paths between any pairs of vertices.
-    #     """
-    #     n = len(self.vertices)
-    #     dist_all = np.empty((n,n))
-    #     dist_all[:] = np.nan
-    #
-    #     for source in self.vertices: #calculate distances for all vertices
-    #         # print("aaaaaa", source)
-    #         source_index = self.vertices.index(source)
-    #         # print("ssss", source_index)
-    #         df_source = self.dijkstra_simple(source_index)
-    #         dist_all[source_index] = df_source["dist"]
-    #
-    #     # for source in self.vertices: #calculate distances for all vertices
-    #     #     df_source = self.dijkstra_simple(source)
-    #     #     dist_all[source] = df_source["dist"]
-    #
-    #     return dist_all
-    #
-    # def get_diameter(self):
-    #     """
-    #     Returns the diameter of the graph.
-    #     The diameter is the longest shortest path between any pair of vertices of the graph.
-    #     """
-    #     dist_all = self.get_all_distances()
-    #     return dist_all.max()
-    #
-    #
-    # def get_path_length(self):
-    #     """
-    #     Returns the mean path length of the graph.
-    #     The path length is the number of edges in the shortest path between 2 vertices,
-    #     averaged over all pairs of vertices.
-    #
-    #     """
-    #     n = len(self.vertices)
-    #     dist_all = self.get_all_distances()
-    #
-    #     dist_sum = dist_all[np.triu_indices(n, k=1)] #extract upper triangle of the matrix, without diagonal
-    #     avg_path_length = np.mean(dist_sum)
-    #
-    #     return avg_path_length, dist_all
-
-
-
-    # def dijkstra_simple(self, source_index):
-    #     """
-    #     Computes a simplfied version of Dijkstra shortest path solving algorithm for
-    #     the given source vertex. In this version, we consider all edge weights = 1.
-    #
+    #     Constructs an instance of the class using Erdos-Renyi model.
     #     Args:
-    #         vertex (int): the vertex index in the vertices list.
+    #         n (int)  : number of vertices.
+    #         p (float): probability to connect any pairs of vertices. Must be between 0 and 1.
+    #
     #     Returns:
-    #         DataFrame: a pandas dataframe containing all the shortest path starting from
-    #         the given vertex.
-    #
+    #         Graph : A instance of the class.
     #     """
-    #     visited = []
-    #     unvisited = self.vertices[:] # copy by values, not by reference
+    #     assert p>=0 and p<=1, "The probability p must be between 0 and 1."
+    #     id_vertices = list(range(0, n))
+    #     possible_edges = list(itertools.combinations(id_vertices,2))
     #
-    #     df = pd.DataFrame({'vertex': self.vertices, 'dist': math.inf, 'previous':""}) # set all distances to +inf
-    #     df.set_index('vertex',inplace=True)
+    #     nb_trials = int(n*(n-1)/2)  # number of trials, probability of each trial
+    #     flips = np.random.binomial(1, p, nb_trials)
     #
-    #     df.at[unvisited[source_index],'dist'] = 0 # initialize distance for source
-    #     # display(df)
+    #     dictionary = dict(zip(possible_edges, flips))
+    #     edges = [k for (k,v) in dictionary.items() if v == 1]
     #
-    #     while unvisited:
+    #     return self(id_vertices, edges)
     #
-    #         d = df.loc[~df.index.isin(visited),["dist"]] # in d, all elements
-    #         # display(d)
-    #         min_dist_vertex = d[d["dist"] == d["dist"].min()].index[0] # return the vertex label (index) of min distance
-    #         # print("min_dist_vertex",min_dist_vertex)
-    #         current_vertex = min_dist_vertex
     #
-    #         df_index_list = list(df.index)
-    #         # print(df_index_list)
-    #         current_vertex_index = df_index_list.index(current_vertex)
-    #         # print(current_vertex_index)
+    # @classmethod
+    # def barabasi_albert(self, G_start, t):
+    #     """
+    #     Constructs an instance of the class using Barabasi-Albert model.
+    #     Args:
+    #         G_start (Graph) : the initial connected graph.
+    #         t (int): the number of vertices to add.
     #
-    #         neighbors = self.get_neighbors(current_vertex)
+    #     Returns:
+    #         Graph : A instance of the class.
+    #     """
+    #     G = self(G_start.vertices[:], G_start.edges[:])
+    #     nb_vertices = len(G.vertices)
     #
-    #         for neighbor in neighbors:
-    #             # print("neighbor", neighbor)
-    #             neighbor_index = df_index_list.index(neighbor)
-    #             # print("neighbor_index", neighbor_index)
+    #     for i in range (t):
+    #         new_vertex_id = len(G.vertices)
+    #         new_edges = []
+    #         degrees_all = G.get_degrees_sum()
     #
-    #             candidate_path = df.iloc[current_vertex_index]["dist"]+1
-    #             if candidate_path < df.iloc[neighbor_index]["dist"]:
-    #                 # print("neighbor_indexxx", neighbor_index)
-    #                 df.at[neighbor,'dist'] = candidate_path
-    #                 df.at[neighbor,'previous'] = current_vertex_index
-    #                 # print("oui !")
+    #         for vertex in G.vertices:
+    #             degree = len(G.get_neighbors(vertex))
+    #             probability = degree/degrees_all
+    #             flip = np.random.binomial(1, probability, 1)
+    #             if flip == 1:
+    #                 new_edges.append((new_vertex_id, vertex))
+    #             #print(new_vertex_id, vertex, probability, flip)
     #
-    #         old_current = current_vertex
-    #         unvisited.remove(old_current)
-    #         visited.append(old_current)
+    #         G.vertices.append(new_vertex_id)
+    #         G.edges.extend(new_edges)
     #
-    #     return df
+    #     return G
+    #
+    #
+    # @staticmethod
+    # def ring_lattice_edges(vertices, k):
+    #     """
+    #         Return all the edges for a defined regular ring lattice.
+    #         Args:
+    #             vertices (list<int>) : list of vertices.
+    #             k (int) : each vertex is connected to its k nearest neighbors.
+    #
+    #         Returns:
+    #             generator : A generator containing all the edges of the regular ring lattice.
+    #     """
+    #     halfk = k//2
+    #     n = len(vertices)
+    #     for i, u in enumerate(vertices):
+    #         for j in range(i+1, i+halfk+1):
+    #             v = vertices[j % n] #edges for "next" neighbors
+    #             yield [u, v]
+    #
+    #
+    # @classmethod
+    # def ring_lattice(self, n, k):
+    #     """
+    #     Constructs a regular ring lattice.
+    #     Args:
+    #         n (int) : number of vertices.
+    #         k (int) : each vertex is connected to its k nearest neighbors.
+    #
+    #     Returns:
+    #         Graph : A regular ring lattice.
+    #     """
+    #     assert k%2 == 0, "k (number of nearest neighbors) must be an even number."
+    #     assert k<=n, "k (number of nearest neighbors) must be equal or less than n (number of vertices)."
+    #
+    #     vertices = list(range(n))
+    #     edges = list(self.ring_lattice_edges(vertices, k))
+    #     print(type(self.ring_lattice_edges(vertices, k)))
+    #     assert len(edges) == n*k/2, "Incorrect number of edges."
+    #     return self(vertices,edges)

@@ -1,49 +1,106 @@
 from Graph import Graph
+from SimpleGraph import SimpleGraph
+from copy import deepcopy
+from collections import defaultdict
+from random import shuffle
+import time
+import pandas as pd
+from itertools import chain
+
 
 class BipartiteGraph(Graph):
 
-    def __init__(self, vertices, edges, top, bottom):
-        Graph.__init__(self, vertices,edges)
+    def __init__(self, top, bottom):
+        Graph.__init__(self, 2) #Graph.__init__(self, vertices,edges)
         self.top = top
         self.bottom = bottom
 
-    def get_projection(self,mode):
-        neighbors_dist2 = {}
-        if mode == "bottom":
-            top_or_bottom = self.bottom
-        elif "top":
-            top_or_bottom = self.top
-
-        for vertex in top_or_bottom:
-            edges_projection = set()
-            for neighbor in self.get_neighbors(vertex): #N(v)
-                edges_projection.update(self.get_neighbors(neighbor))#N(N(v))
-                edges_projection.remove(vertex)
-#               print(neighbor , " ", self.get_neighbors(neighbor))
-            neighbors_dist2[vertex]= edges_projection
-
-        edges = set()
-        for (k,v) in neighbors_dist2.items():
-            for vertex in v:
-                edges.add((k,vertex))
-        edges = list(set(tuple(sorted(p)) for p in edges))
-        edges = [list(elt) for elt in edges]
-
-        return Graph(self.bottom, edges)
 
 
+    def analyze(self,set):
+        pass
 
-    def get_neighbors2(self,vertex):
-        neighbors1 = self.get_neighbors(vertex)
+    # @staticmethod
+    def switcher(self,set_selected):
+        if set_selected == self.top:
+            return self.top, self.bottom
+        elif set_selected == self.bottom:
+            return self.bottom, self.top
+
+
+    # @staticmethod
+    def get_neighbors2(self,vertex, setu):
+        setu, set_other = self.switcher(setu)
+
+        neighbors1 = setu.get(vertex) #self.get_neighbors(vertex)
+
         neighbors2 = set()
         for neighbor in neighbors1:
-            neighbors2.update(self.get_neighbors(neighbor))
+            neighbors2.update(set_other.get(neighbor))
             neighbors2.remove(vertex)
+        return set(neighbors2)
 
-        return list(neighbors2)
+
+    # def add_edge()
+    def get_projection(self,setu):
+        neighbors_dist2 = {}
+        setu, set_other = self.switcher(setu)
+
+        for vertex in setu:
+            neighbors2 = self.get_neighbors2(vertex, setu)
+            neighbors_dist2[vertex]= neighbors2
+
+        return SimpleGraph(neighbors_dist2)
 
 
-    def get_redundancy(self, mode, vertex):
+
+
+    def remove_vertex(self, vertex, vertex_set):
+        # , set_other = self.switcher(vertex_set)
+        # if vertex_set == self.top:
+        vertex_set, set_other = self.switcher(vertex_set)
+        vertex_neighbors = self.get_neighbors(vertex,vertex_set)
+        vertex_set = vertex_set.pop(vertex, None)
+
+        for neighbor in vertex_neighbors:
+            set_other[neighbor].remove(vertex)
+
+
+    def add_vertex(self, vertex, vertex_neighbors, vertex_set):
+        vertex_set, set_other = self.switcher(vertex_set)
+        vertex_set[vertex] = vertex_neighbors
+
+        for neighbor in vertex_neighbors:
+            set_other[neighbor].add(vertex)
+
+
+    def get_redundancy(self,vertex,set): #(self, mode, vertex):
+
+        def count_edges(projection):
+            total_count = 0
+            for k,v in {k: v for k, v in projection.all.items() if k in vertex_neighbors}.items():
+                total_count += sum(map(lambda x : x in vertex_neighbors, v))
+            return total_count/2
+
+        set, set_other = self.switcher(set)
+        vertex_neighbors = self.get_neighbors(vertex, set)
+
+        G_projection =  self.get_projection(set_other)
+
+        all_nb_edges_between_neighbors = count_edges(G_projection)
+
+        self.remove_vertex(vertex,set)
+        G_projection_removed =  self.get_projection(set_other)
+
+        removed_nb_edges_between_neighbors = count_edges(G_projection_removed)
+
+        self.add_vertex(vertex,vertex_neighbors, set)
+
+        return all_nb_edges_between_neighbors, removed_nb_edges_between_neighbors
+
+
+
+    def get_redundancy2(self, mode, vertex):
         if mode == "bottom":
             top_or_bottom = self.bottom
             other = self.top
@@ -97,3 +154,129 @@ class BipartiteGraph(Graph):
         for neighbor2 in neighbors2:
             cc_bullet_pair_sum += self.cc_bullet_pair(vertex, neighbor2)
         return cc_bullet_pair_sum/len(neighbors2)
+
+
+    # def count_edges_between_neighbors(self,vertex, set):#= default_set):
+    #     set, set_other = self.switcher(set)
+    #
+    #     count = 0
+    #     neighbors_vertex = set.get(vertex)
+    #     print("neighbors_vertex", neighbors_vertex)
+    #     for neighbor in neighbors_vertex:
+    #         count += len(neighbors_vertex & set_other.get(neighbor))
+    #     return count/2 # because undirected graph
+    #
+    #
+    #
+    # #NO CHANGES
+    # def depth_first_search(self, vertex, cc_vertex, visited,set):
+    #     """
+    #     Computes depth-first search (DFS) algorithm starting from a vertex.
+    #     """
+    #     visited.append(vertex)
+    #     cc_vertex.append(vertex)
+    #
+    #     #print(cc_vertex)
+    #     print(self.g)
+    #     for neighbor in self.get_neighbors(vertex,set):
+    #         if neighbor not in visited:
+    #             cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,set)
+    #     return cc_vertex
+
+
+
+
+    def analyze(self,set):
+        start_time = time.time()
+        self.get_degree_distribution(set)
+        # features = ["nb_top_vertices",
+        #             "nb_edges",
+        #             "clustering_coeff",
+        #             "connected_components",
+        #             "diameter",
+        #             "path_length",
+        #             # "assortativity",
+        #             "avg_degree",
+        #             "degrees_sum",
+        #             "degree_mean",
+        #             "degree_min",
+        #             "degree_max"]
+
+
+        # df.loc["connected_components"] = len(self.get_connected_components())
+        # df.loc["diameter"] = self.get_diameter()
+        # df.loc["Assortativity"] = self.get_assortativity()
+        # df.loc["path_length"] = self.get_path_length()
+        # df.loc["degree_avg"] = self.get_degree_mean()
+        # df.loc["degree_sum"] = self.get_degrees_sum()
+        # df.loc["degree_min"] = self.get_degree_min()
+        # df.loc["degree_max"] = self.get_degree_max()
+        # print("--- %s secconds ---" % (time.time() - start_time))
+        #
+        # return df
+
+        df = pd.DataFrame(columns = {"value":""})
+
+        df.loc["nb_vertices_top"] = len(set.keys())
+        # df.loc["nb_vertices_top"] = len(set.keys())
+        df.loc["nb_edges"] = len(list(chain.from_iterable(set.values())))
+        df.loc["clustering_coeff"] = self.get_clustering_coeff(set)
+        df.loc["connected_components"] = len(self.get_connected_components(set))
+        df.loc["diameter"] = self.get_diameter(set)
+        # df.loc["Assortativity"] = self.get_assortativity()
+        df.loc["path_length"] = self.get_path_length(set)
+        df.loc["degree_avg"] = self.get_degree_mean(set)
+        df.loc["degree_sum"] = self.get_degrees_sum(set)
+        df.loc["degree_min"] = self.get_degree_min(set)
+        df.loc["degree_max"] = self.get_degree_max(set)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        return df
+
+
+#==============================================================================
+# CLASS METHODS
+#==============================================================================
+
+    @classmethod
+    def from_file(cls,filename,separator = ",", start = 0):
+        with open(filename, 'r') as filehandle: # OK
+            lines = filehandle.readlines()
+            bottom = defaultdict(set)
+            top = defaultdict(set)
+
+            for i in range (start, len(lines)):
+                elts = list(map(int, lines[i].split(separator)))
+                bottom_vertex = elts[0]
+                top_vertex = elts[1]
+
+                bottom[bottom_vertex].add(top_vertex)
+                top[top_vertex].add(bottom_vertex)
+
+            return cls(bottom,top)
+
+
+
+    @classmethod
+    def configuration_model(cls, degree_dist_top, degree_dist_bottom):
+
+        top_stubs = [k for k,v in degree_dist_top.items() for i in range(v)]
+        bottom_stubs = [k for k,v in degree_dist_bottom.items() for i in range(v)]
+
+        shuffle(bottom_stubs)
+
+        new_top = defaultdict(set)
+        new_bottom = defaultdict(set)
+
+        for i in range (len(top_stubs)):
+            new_top[top_stubs[i]].add(bottom_stubs[i])
+            new_bottom[bottom_stubs[i]].add(top_stubs[i])
+
+        return cls(new_top,new_bottom)
+
+
+
+#
+#         # 750170420C16BQZNV
+#         0768768187
+# huynhalice0320@gmail.com
