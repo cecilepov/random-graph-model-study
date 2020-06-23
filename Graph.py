@@ -240,7 +240,71 @@ class Graph:
         return len(list(chain.from_iterable(set1.values())))
 
 
-    # def depth_first_search(self, vertex, cc_vertex, visited):
+
+    def depth_first_search(self, vertex, cc_vertex, visited,tupleset, set1):#toggle):
+        """
+        Computes depth-first search (DFS) algorithm starting from a vertex.
+        """
+        visited.append(vertex)
+        cc_vertex.append(vertex)
+
+
+        #print(cc_vertex)
+        double = next(toggle)
+        t = double[0]
+        print("-----\n")
+        print("visited",visited)
+        print(vertex, "in", double[1])
+
+        # if vertex is "B":
+        #     z = "JE SUIS A"
+        # else:
+        #      z = "NON"
+        z =
+
+        neighbors = self.get_neighbors(vertex,t)
+        print("neighbors", neighbors)
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                print("goes in neighbor",neighbor)
+                cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,toggle)
+                next(toggle)
+                print("toggle value : ",z)
+                # print("ME", vertex)
+            else:
+                print(neighbor, "ignored")
+
+        print()
+        return cc_vertex
+
+
+    def get_connected_components(self,set1,set2):
+        """
+        Returns a list of list containing the connected components.
+        [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
+        """
+        def toggler():
+            while True:
+                yield set1,"top"
+                yield set2,"bot"
+
+        toggle = toggler()
+
+        visited = []
+        cc_all = []
+
+        for vertex in set1:
+            if vertex not in visited:
+                # print(vertex)
+                cc_vertex = []
+                cc_all.append(self.depth_first_search(vertex, cc_vertex, visited, (set1,set2))
+        return cc_all
+
+
+
+# MARCHE POUR GRAPHE SIMPLE !!
+
+    # def depth_first_search(self, vertex, cc_vertex, visited,set1):
     #     """
     #     Computes depth-first search (DFS) algorithm starting from a vertex.
     #     """
@@ -248,28 +312,32 @@ class Graph:
     #     cc_vertex.append(vertex)
     #
     #     #print(cc_vertex)
-    #     for neighbor in self.get_neighbors(vertex):
+    #     for neighbor in self.get_neighbors(vertex,set1):
     #         if neighbor not in visited:
-    #             cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited)
+    #             cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,set1)
     #     return cc_vertex
-
-
-    # def get_connected_components(self):
+    #
+    #
+    # def get_connected_components(self,set1):
     #     """
     #     Returns a list of list containing the connected components.
     #     [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
     #     """
+    #     def toggler():
+    #         while True:
+    #             yield 0
+    #             yield 1
     #
     #     visited = []
     #     cc_all = []
     #
-    #     for vertex in self.vertices:
+    #     for vertex in set1:
     #         if vertex not in visited:
     #             cc_vertex = []
-    #             cc_all.append(self.depth_first_search(vertex, cc_vertex, visited))
+    #             cc_all.append(self.depth_first_search(vertex, cc_vertex, visited,set1))
     #     return cc_all
-    #
-    #
+#-------------------------------------------------
+
     # @staticmethod
     # def get_symmetric_edges(edges):
     #     """
