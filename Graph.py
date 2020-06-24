@@ -59,36 +59,6 @@ class Graph:
 
 
 
-    @classmethod
-    def watts_strogatz(self, n, k, p):
-        """
-        Constructs an instance of the class using Watts-Strogatz model.
-        Args:
-            n (int)   : number of vertices.
-            k (int)   : each vertex is connected to its k nearest neighbors.
-            p (float) : probability to rewire any edge. Must be between 0 and 1.
-
-        Returns:
-            Graph : A instance of the class.
-        """
-        assert p>=0 and p<=1, "The probability p must be between 0 and 1."
-
-        G = self.ring_lattice(n,k)
-        nb_edges = len(G.edges)
-        halfk = k//2
-
-        for lap in range(halfk):
-            for i in range (lap, nb_edges, halfk):
-                current_vertex = G.edges[i][0]
-                if np.random.binomial(1, p):
-                    choice_set = set(G.vertices) - set(G.get_neighbors(current_vertex)) - {current_vertex}
-                    if choice_set:
-                        new_extremity = random.choice(list(choice_set))
-                        G.edges[i] = [current_vertex,new_extremity]
-        return G
-
-
-
     def plot_nx(self, circular=False, node_size = 400, figsize=(5,4)):
         """Plots the graph using NetworkX function."""
         G=nx.Graph()
@@ -121,15 +91,15 @@ class Graph:
 
 
 
-    def get_degree_mean(self,set):
-        return np.mean(list(self.get_all_degrees().values()))
+    def get_degree_mean(self,set1):
+        return np.mean(list(self.get_all_degrees(set1).values()))
 
 
-    def get_degree_max(self):
-            return max(list(self.get_all_degrees().values()))
+    def get_degree_max(self,set1):
+            return max(list(self.get_all_degrees(set1).values()))
 
-    def get_degree_min(self):
-                return min(list(self.get_all_degrees().values()))
+    def get_degree_min(self,set1):
+                return min(list(self.get_all_degrees(set1).values()))
 
 
     def get_degree_distribution(self, set1, plot = 1):
@@ -156,81 +126,7 @@ class Graph:
         Returns:
             int: degree of the vertex.
         """
-        # adjacent_edges = [list(edge) for edge in self.edges if vertex in edge]
-        # flatten_edges = [item for sublist in adjacent_edges for item in sublist]
-        # neighbors = [i for i in flatten_edges if i != vertex]
-        # return neighbors
         return set1.get(vertex)
-
-
-    def get_clustering_coeff(self,set1):
-        """
-        Returns the clustering coefficient CC(G) of a graph G.
-        For all v vertices, where degree(v) > 1:
-            CC(v) = (2*Nv) / (Kv*(Kv-1))
-            With : Nv the number of edges between neighbors of v
-                   Kv the degree of v
-                   Kv*(Kv-1) the max number of possible interconnections between neighbors of v
-        CC(G) is the mean of all Cc(v)
-        """
-
-        CCV_all = [] #list to store all local CC
-
-        for vertex, kv in self.get_all_degrees(set1).items():
-            if kv > 1:
-                neighbors = self.get_neighbors(vertex,set1)
-                nv = sum( len(self.get_neighbors(neighbor,set1) & neighbors) for neighbor in neighbors)/2 #nb edges between neighbors
-                CC_local = (2*nv)/(kv*(kv-1))
-                CCV_all.append(CC_local)
-
-        return np.mean(CCV_all)
-
-
-
-
-    def bfs(self, source,set1):
-        queue = deque([source])
-        level = {source: 0}
-        parent = {source: None}
-
-        while queue:
-            current_vertex = queue.popleft()
-            for neighbor in self.get_neighbors(current_vertex,set1):
-                if neighbor not in level:
-                    queue.append(neighbor)
-                    level[neighbor] = level[current_vertex] + 1
-                    parent[neighbor] = current_vertex
-        return level, parent
-
-
-    def get_diameter(self,set1):
-        """
-        Returns the diameter of the graph.
-        The diameter is the longest shortest path between any pair of vertices of the graph.
-        """
-        max_global = float('-inf')
-        for vertex in set1:
-            distances,_ = self.bfs(vertex,set1)
-            max_local = max(distances.values())
-            if max_global < max_local:
-                max_global = max_local
-        return max_global
-
-
-    def get_path_length(self,set1):
-        """
-        Returns the mean path length of the graph.
-        The path length is the number of edges in the shortest path between 2 vertices,
-        averaged over all pairs of vertices.
-        """
-        distances_sum = 0
-        nb_elts = 0
-        for elt in set1:
-            distances,_ = self.bfs(elt,set1)
-            distances_sum += sum(distances.values())
-            nb_elts += len(distances) -1 # distance to current element = 0
-
-        return distances_sum/nb_elts
 
 
     def get_degrees_sum(self,set1):
@@ -241,40 +137,20 @@ class Graph:
 
 
 
-    def depth_first_search(self, vertex, cc_vertex, visited,tupleset, set1):#toggle):
+    def depth_first_search(self, vertex, cc_vertex, visited,dico, value):#toggle):
         """
         Computes depth-first search (DFS) algorithm starting from a vertex.
         """
         visited.append(vertex)
         cc_vertex.append(vertex)
+        set1 = dico.get(value)
 
-
-        #print(cc_vertex)
-        double = next(toggle)
-        t = double[0]
-        print("-----\n")
-        print("visited",visited)
-        print(vertex, "in", double[1])
-
-        # if vertex is "B":
-        #     z = "JE SUIS A"
-        # else:
-        #      z = "NON"
-        z =
-
-        neighbors = self.get_neighbors(vertex,t)
-        print("neighbors", neighbors)
+        neighbors = self.get_neighbors(vertex,set1)
         for neighbor in neighbors:
             if neighbor not in visited:
-                print("goes in neighbor",neighbor)
-                cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,toggle)
-                next(toggle)
-                print("toggle value : ",z)
-                # print("ME", vertex)
-            else:
-                print(neighbor, "ignored")
+                new_value = not value
+                cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,dico, new_value)
 
-        print()
         return cc_vertex
 
 
@@ -283,21 +159,14 @@ class Graph:
         Returns a list of list containing the connected components.
         [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
         """
-        def toggler():
-            while True:
-                yield set1,"top"
-                yield set2,"bot"
-
-        toggle = toggler()
-
+        dico  = {True:set1, False:set2}
         visited = []
         cc_all = []
 
         for vertex in set1:
             if vertex not in visited:
-                # print(vertex)
                 cc_vertex = []
-                cc_all.append(self.depth_first_search(vertex, cc_vertex, visited, (set1,set2))
+                cc_all.append(self.depth_first_search(vertex, cc_vertex, visited, dico,True))
         return cc_all
 
 
