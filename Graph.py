@@ -34,18 +34,18 @@ import time
 from itertools import chain
 from functools import reduce
 from copy import deepcopy
-
+from abc import ABC,abstractmethod
 
 # Authorship information
 __author__  = "Pov Cécile"
 __credits__ = ["Tabourier Lionel","Tarissan Fabien"]
 __version__ = "1.0"
-__date__    = "20/04/2020"
+__date__    = "24/06/2020"
 __email__   = "cecile.pov@gmail.com"
 
 
 
-class Graph:
+class Graph(ABC):
     """This class is a implementation for undirected graph.
     A graph is a data structure composed of vertices and edges.
 
@@ -58,6 +58,20 @@ class Graph:
         nb_sets = all
 
 
+    # @abstractmethod
+    # def erdos_renyi(self):
+    #     pass
+
+
+    # @abstractmethod
+    # def get_density(self):
+    #     pass
+
+    # @abstractmethod
+    # def get_nb_edges(self):
+    #     pass
+    #
+    # def get_nb_vertices(self)
 
     def plot_nx(self, circular=False, node_size = 400, figsize=(5,4)):
         """Plots the graph using NetworkX function."""
@@ -88,7 +102,6 @@ class Graph:
 
         """
         return {key: len(value) for key, value in set1.items()}
-
 
 
     def get_degree_mean(self,set1):

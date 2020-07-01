@@ -1,5 +1,5 @@
 from Graph import Graph
-from SimpleGraph import SimpleGraph
+from UnipartiteGraph import UnipartiteGraph
 from copy import deepcopy
 from collections import defaultdict
 from random import shuffle
@@ -142,7 +142,7 @@ class BipartiteGraph(Graph):
 
 
 
-    def cc_bullet_pair(self, vertex1, vertex2):
+    def cc_bullet_pair(self, vertex1, vertex2): # cc(u,v)
         assert vertex1 and vertex2 in self.bottom or vertex1 and vertex2 in self.top
         neighbors_vertex1 = self.get_neighbors(vertex1)
         neighbors_vertex2 = self.get_neighbors(vertex2)
@@ -157,8 +157,7 @@ class BipartiteGraph(Graph):
         return len(intersection)/len(union)
 
 
-
-    def cc_bullet(self, vertex):
+    def cc_bullet(self, vertex): #cc(u)
         neighbors2 = self.get_neighbors2(vertex)
         cc_bullet_pair_sum = 0
         for neighbor2 in neighbors2:
@@ -166,13 +165,63 @@ class BipartiteGraph(Graph):
         return cc_bullet_pair_sum/len(neighbors2)
 
 
+    def cc_bullet_set(self, set):
+        cc_bullet_set_sum = 0
+        for vertex in set:
+            cc_bullet_set_sum += cc_bullet(vertex)
+        return cc_bullet_pair_sum/len(set)
+
+
+    def cc_bullet_graph(self):
+        nb_vertices_top = self.get_nb_vertices(self.top)
+        nb_vertices_bottom = self.get_nb_vertices(self.bottom)
+
+        cc_bullet_top    = self.cc_bullet_set(self.top)
+        cc_bullet_bottom = self.cc_bullet_set(self.bottom)
+
+        return ((nb_vertices_top*cc_bullet_top)+(nb_vertices_bottom*cc_bullet_bottom))/(nb_vertices_top+cc_bullet_bottom)
+
+
+
+    def get_density(self):
+        nb_edges    = self.get_nb_edges()
+        nb_vertices_top = self.get_nb_vertices(self.top)
+        nb_vertices_bottom = self.get_nb_vertices(self.bottom)
+
+        return (nb_edges)/(nb_vertices_top*nb_vertices_bottom)
+
+
+    def get_nb_vertices(self,set):
+        return len(set.keys())
+
+
+    def get_nb_edges(self):
+        return len(list(chain.from_iterable(self.top.values()))) #divided by 2 because undirected graph
+
+
+
+
     def analyze(self,set):
-        pass
+        start_time = time.time()
+        self.get_degree_distribution(set)
 
+        df = pd.DataFrame(columns = {"value":""})
 
+        df.loc["nb_vertices"] = self.get_nb_vertices(set)
+        df.loc["nb_edges"] = self.get_nb_edges()
+        df.loc["density"] = self.get_density()
 
-
-
+        # df.loc["clustering_coeff"] = self.get_clustering_coeff(set)
+        df.loc["nb_connected_components"] = len(self.get_connected_components(self.top,self.bottom))
+        # df.loc["diameter"] = self.get_diameter(set)
+        # df.loc["Assortativity"] = self.get_assortativity(set)
+        # df.loc["path_length"] = self.get_path_length(set)
+        df.loc["degree_avg"] = self.get_degree_mean(set)
+        df.loc["degree_sum"] = self.get_degrees_sum(set)
+        df.loc["degree_min"] = self.get_degree_min(set)
+        df.loc["degree_max"] = self.get_degree_max(set)
+        print("--- %s seconds ---" % (time.time() - start_time))
+        return df
 
 
 
@@ -202,33 +251,6 @@ class BipartiteGraph(Graph):
     #         if neighbor not in visited:
     #             cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,set)
     #     return cc_vertex
-
-
-
-
-    def analyze(self,set):
-        start_time = time.time()
-        self.get_degree_distribution(set)
-
-
-        df = pd.DataFrame(columns = {"value":""})
-
-        df.loc["nb_vertices_top"] = len(set.keys())
-        # df.loc["nb_vertices_top"] = len(set.keys())
-        df.loc["nb_edges"] = len(list(chain.from_iterable(set.values())))
-        df.loc["clustering_coeff"] = self.get_clustering_coeff(set)
-        df.loc["connected_components"] = len(self.get_connected_components(set))
-        df.loc["diameter"] = self.get_diameter(set)
-        # df.loc["Assortativity"] = self.get_assortativity()
-        df.loc["path_length"] = self.get_path_length(set)
-        df.loc["degree_avg"] = self.get_degree_mean(set)
-        df.loc["degree_sum"] = self.get_degrees_sum(set)
-        df.loc["degree_min"] = self.get_degree_min(set)
-        df.loc["degree_max"] = self.get_degree_max(set)
-        print("--- %s seconds ---" % (time.time() - start_time))
-
-        return df
-
 
 
 
