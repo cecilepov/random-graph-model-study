@@ -6,6 +6,7 @@ from random import shuffle
 import time
 import pandas as pd
 from itertools import chain
+import queue
 
 
 class BipartiteGraph(Graph):
@@ -198,6 +199,55 @@ class BipartiteGraph(Graph):
     def get_nb_edges(self):
         return len(list(chain.from_iterable(self.top.values()))) #divided by 2 because undirected graph
 
+
+
+    def get_consensus_set(self,Sx,set1): # perf can be improved
+        # print(Sx)
+        neighbors_all = list()
+        for elt in Sx:
+            neighbors_vertex = self.get_neighbors(elt,set1)
+            neighbors_all.append(neighbors_vertex)
+
+        print("NEIGHBORS",neighbors_all)
+        consensus_set = set(set.intersection(*neighbors_all))
+        return consensus_set
+
+
+    def find_all_maximal(self):
+
+        # print(self.get_consensus_set({"A","B"},self.top))
+
+        Y = set(self.bottom.keys())
+
+        S = {frozenset(self.get_neighbors(yj,self.bottom)) for yj in Y if len(self.get_neighbors(yj,self.bottom)) >1}
+        Q = queue.Queue()
+        print(S)
+        # print(S)
+        for elt in S:
+            Q.put(elt)
+
+
+        while not Q.empty():
+            Sx = Q.get()
+            # print(Sx)
+            print("SX",Sx)
+            # self.get_consensus_set(Sx,self.top)
+            yj_not_in_Sx = Y - self.get_consensus_set(Sx,self.top)
+            for yj in yj_not_in_Sx:
+                N_yj = self.get_neighbors(yj,self.bottom)
+                S_new = Sx.intersection(N_yj)
+                if S_new not in S :
+                    if len(S_new) >1:
+                        S.add(S_new)
+                        Q.put(S_new)
+                        print("SNEW",S_new)
+
+        C_max = set()
+        for Sx in S:
+            print("haha",Sx)
+            # C_max.add(frozenset(self.get_consensus_set(Sx,self.top)))
+            C_max.add(tuple([Sx, tuple(self.get_consensus_set(Sx,self.top)) ]))
+        return C_max
 
 
 
