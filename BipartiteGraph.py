@@ -208,7 +208,7 @@ class BipartiteGraph(Graph):
             neighbors_vertex = self.get_neighbors(elt,set1)
             neighbors_all.append(neighbors_vertex)
 
-        print("NEIGHBORS",neighbors_all)
+        # print("NEIGHBORS",neighbors_all)
         consensus_set = set(set.intersection(*neighbors_all))
         return consensus_set
 
@@ -221,7 +221,6 @@ class BipartiteGraph(Graph):
 
         S = {frozenset(self.get_neighbors(yj,self.bottom)) for yj in Y if len(self.get_neighbors(yj,self.bottom)) >1}
         Q = queue.Queue()
-        print(S)
         # print(S)
         for elt in S:
             Q.put(elt)
@@ -229,8 +228,7 @@ class BipartiteGraph(Graph):
 
         while not Q.empty():
             Sx = Q.get()
-            # print(Sx)
-            print("SX",Sx)
+            # print("SX",Sx)
             # self.get_consensus_set(Sx,self.top)
             yj_not_in_Sx = Y - self.get_consensus_set(Sx,self.top)
             for yj in yj_not_in_Sx:
@@ -240,13 +238,15 @@ class BipartiteGraph(Graph):
                     if len(S_new) >1:
                         S.add(S_new)
                         Q.put(S_new)
-                        print("SNEW",S_new)
+                        # print("SNEW",S_new)
 
         C_max = set()
         for Sx in S:
-            print("haha",Sx)
+            # print("haha",Sx)
             # C_max.add(frozenset(self.get_consensus_set(Sx,self.top)))
-            C_max.add(tuple([Sx, tuple(self.get_consensus_set(Sx,self.top)) ]))
+            Sx_consensus = tuple(self.get_consensus_set(Sx,self.top))
+            if len(Sx_consensus) >1:
+                C_max.add(tuple([tuple(Sx), Sx_consensus]))
         return C_max
 
 
