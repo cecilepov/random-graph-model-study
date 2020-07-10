@@ -7,6 +7,12 @@ import time
 import pandas as pd
 from itertools import chain
 import queue
+import random
+import itertools
+from collections import Counter
+
+from collections import defaultdict
+
 
 
 class BipartiteGraph(Graph):
@@ -39,10 +45,8 @@ class BipartiteGraph(Graph):
             return cls(bottom,top)
 
 
-
     @classmethod
-    def configuration_model(cls, degree_dist_top, degree_dist_bottom):
-
+    def configuration_model(cls, degree_dist_top=None, degree_dist_bottom=None):
         top_stubs = [k for k,v in degree_dist_top.items() for i in range(v)]
         bottom_stubs = [k for k,v in degree_dist_bottom.items() for i in range(v)]
 
@@ -56,6 +60,8 @@ class BipartiteGraph(Graph):
             new_bottom[bottom_stubs[i]].add(top_stubs[i])
 
         return cls(new_top,new_bottom)
+
+
 
 
 #==============================================================================
@@ -112,6 +118,17 @@ class BipartiteGraph(Graph):
 
         for neighbor in vertex_neighbors:
             set_other[neighbor].add(vertex)
+
+
+
+    def remove_edge(self,top_extremity, bottom_extremity):
+        self.top[top_extremity].remove(bottom_extremity)
+        self.bottom[bottom_extremity].remove(top_extremity)
+
+
+    def add_edge(self,top_extremity, bottom_extremity):
+        self.top[top_extremity].update(bottom_extremity)
+        self.bottom[bottom_extremity].update(top_extremity)
 
 #==============================================================================
 # ANALYSIS
@@ -200,6 +217,10 @@ class BipartiteGraph(Graph):
         return len(list(chain.from_iterable(self.top.values()))) #divided by 2 because undirected graph
 
 
+#==============================================================================
+# COUNT BICLIQUES
+#==============================================================================
+
 
     def get_consensus_set(self,Sx,set1): # perf can be improved
         # print(Sx)
@@ -213,41 +234,193 @@ class BipartiteGraph(Graph):
         return consensus_set
 
 
-    def find_all_maximal(self):
 
-        # print(self.get_consensus_set({"A","B"},self.top))
+    def find_all_maximal(self, strategy = "random", noverlap=True):
 
         Y = set(self.bottom.keys())
-
-        S = {frozenset(self.get_neighbors(yj,self.bottom)) for yj in Y if len(self.get_neighbors(yj,self.bottom)) >1}
+        S = set()
         Q = queue.Queue()
-        # print(S)
-        for elt in S:
-            Q.put(elt)
 
+        for yj in Y:
+            if len(self.get_neighbors(yj,self.bottom)) >1: #exclude 1-top bicliques
+                N_yj = frozenset(self.get_neighbors(yj,self.bottom))
+                S.add(N_yj)
+                Q.put(N_yj)
 
         while not Q.empty():
             Sx = Q.get()
-            # print("SX",Sx)
-            # self.get_consensus_set(Sx,self.top)
             yj_not_in_Sx = Y - self.get_consensus_set(Sx,self.top)
             for yj in yj_not_in_Sx:
                 N_yj = self.get_neighbors(yj,self.bottom)
                 S_new = Sx.intersection(N_yj)
-                if S_new not in S :
-                    if len(S_new) >1:
-                        S.add(S_new)
-                        Q.put(S_new)
-                        # print("SNEW",S_new)
+                if S_new not in S and len(S_new) > 1:
+                    S.add(S_new)
+                    Q.put(S_new)
 
-        C_max = set()
+        bicliques = set() #C_max
         for Sx in S:
-            # print("haha",Sx)
-            # C_max.add(frozenset(self.get_consensus_set(Sx,self.top)))
-            Sx_consensus = tuple(self.get_consensus_set(Sx,self.top))
+            Sx_consensus = self.get_consensus_set(Sx,self.top)
             if len(Sx_consensus) >1:
-                C_max.add(tuple([tuple(Sx), Sx_consensus]))
-        return C_max
+                bicliques.add(tuple( [frozenset(Sx), frozenset(Sx_consensus)] ))
+        print("bicliques found",bicliques)
+        if noverlap:
+            bicliques = self.remove_overlap(strategy,bicliques) # Pattern can be improved
+        return bicliques
+
+
+
+    # def remove_overlap(self,bicliques_all):
+    #     # DETECTE LES CHEVAUCHEMENTS
+    #     bicliques_all = bicliques_all.copy()
+    #     bicliques_noverlap = set()
+    #     noverlap_edges = set()
+    #     visited = set()
+    #
+    #     while bicliques_all:
+    #         current_top, current_bottom = random.sample(bicliques_all,1)[0]
+    #         current = (current_top,current_bottom)
+    #         visited.add(current)
+    #         bicliques_all.remove(current)
+    #
+    #         current_edges = set(itertools.product(current_top, current_bottom))
+    #
+    #         if not noverlap_edges.intersection(current_edges):
+    #             bicliques_noverlap.add(current)
+    #             noverlap_edges.update(tuple(current_edges))
+    #
+    #     return bicliques_noverlap
+    #
+    #
+
+
+    def remove_overlap(self,bicliques_all, strategy = "random"):
+        bicliques_found = list(bicliques_all)
+        selected = dict()
+
+        if strategy == "random":
+            random.shuffle(bicliques_found)
+        elif strategy == "maxtop":
+            bicliques_found = sorted(bicliques_found, key=lambda biclique: len(biclique[0]),reverse = True)
+        elif strategy == "maxbottom":
+            bicliques_found = sorted(bicliques_found, key=lambda biclique: len(biclique[1]),reverse = True)
+        elif strategy == "maxnodes":
+            bicliques_found = sorted(bicliques_found, key=lambda biclique: len(list(chain.from_iterable(biclique))),reverse = True)
+
+        bicliques_found_q = queue.Queue()
+        [bicliques_found_q.put(i) for i in bicliques_all]
+
+        while not bicliques_found_q.empty():
+
+            current_top, current_bottom = bicliques_found_q.get()
+            current_biclique = (current_top,current_bottom)
+
+            current_edges = set(itertools.product(current_top, current_bottom))
+
+            selected_edges = set(selected.keys())
+
+            overlap_edges = selected_edges.intersection(current_edges)
+
+            if not overlap_edges:
+                for edge in current_edges:
+                    selected[edge] = current_biclique
+
+        return set(selected.values())
+
+
+    def get_degree_to_bicliques(self,bicliques):
+        # DETECTE LES NOEUDS QUI FONT "PONTS" ENTRE DEUX BICLIQUES
+        # detected = detected_or.copy()
+        count_all = Counter({})
+        for biclique in bicliques:
+            count_current = Counter(chain.from_iterable(biclique))
+            count_all.update(count_current)
+
+        return count_all
+
+
+    def get_degree_to_bicliques_dist(self,bicliques, plot = 1): # Improvement : shared code with classic degree distribution function
+        count_all = self.get_degree_to_bicliques(bicliques)
+        distribution = Counter(count_all.values())
+
+        if plot == 1:
+            index_name = "degré vers des bicliques maximales"
+            df_distribution = pd.DataFrame.from_dict(distribution, orient='index').reset_index()
+            df_distribution.rename(columns={'index':index_name,0:'count'}, inplace=True)
+            df_distribution.sort_values(by=index_name,ascending=1, inplace=True) # sort the degree by ascending order
+            ax = df_distribution.plot.bar(x=index_name, y="count", title="Distribution des degrés vers des bicliques maximales", rot=0)
+
+        return distribution
+
+
+
+#==============================================================================
+# TRIPARTITE ENCODING
+#==============================================================================
+
+    @staticmethod
+    def get_bottom(top):
+        bottom = defaultdict(set)
+
+        for k,v in top.items():
+            for elt in v:
+                bottom[elt].add(k)
+        return bottom
+
+
+    def build_subgraphs(self):
+
+        max_bicliques = self.find_all_maximal()
+
+        # CONSTRUCT SUB12 AND SUB13
+        top12 = defaultdict(set)
+        top13 = defaultdict(set)
+
+        v1_idx = 0
+        for top,bottom in max_bicliques:
+            top12[v1_idx] = set(top)
+            top13[v1_idx] = set(bottom)
+            v1_idx+=1
+
+        sub12 = BipartiteGraph(top12, self.get_bottom(top12))
+        sub13 = BipartiteGraph(top13, self.get_bottom(top13))
+
+
+        # CONSTRUCT SUB23
+        sub23 = deepcopy(self) # improvement: memory usage
+
+        for k,v in max_bicliques:
+            for top_node in k:
+                for bottom_node in v:
+                    sub23.remove_edge(top_node,bottom_node)
+
+
+        # CONFIGURATION MODEL ON ALL SUBGRAPHS
+        sub12_cm = BipartiteGraph.configuration_model(sub12.get_all_degrees(sub12.top),
+                                                      sub12.get_all_degrees(sub12.bottom))
+
+        sub13_cm = BipartiteGraph.configuration_model(sub13.get_all_degrees(sub13.top),
+                                                      sub13.get_all_degrees(sub13.bottom))
+
+        sub23_cm = BipartiteGraph.configuration_model(sub23.get_all_degrees(sub23.top),
+                                                      sub23.get_all_degrees(sub23.bottom))
+
+
+        # FINAL GRAPH WITH SUB13 AND SUB12
+        graph_cm_top = defaultdict(set)
+
+        for idx_set1,nodes_set2 in sub12_cm.top.items():
+            nodes_set3 = sub13_cm.top.get(idx_set1)
+            for elt in nodes_set2:
+                graph_cm_top[elt].update(nodes_set3)
+
+
+        # ADD ALL SUB23 EDGES TO FINAL GRAPH
+        for k,v in sub23_cm.top.items():
+            graph_cm_top[k].update(v)
+
+        bg_cm = BipartiteGraph(graph_cm_top, self.get_bottom(graph_cm_top))
+
+        return bg_cm, max_bicliques
 
 
 
