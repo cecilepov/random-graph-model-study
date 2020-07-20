@@ -14,6 +14,14 @@ from collections import Counter
 from collections import defaultdict
 
 
+# Authorship information
+__author__  = "Pov Cécile"
+__credits__ = ["Tabourier Lionel","Tarissan Fabien"]
+__version__ = "1.0"
+__date__    = "10/07/2020"
+__email__   = "cecile.pov@gmail.com"
+
+
 
 class BipartiteGraph(Graph):
 
@@ -35,7 +43,8 @@ class BipartiteGraph(Graph):
             top = defaultdict(set)
 
             for i in range (start, len(lines)):
-                elts = list(map(int, lines[i].split(separator)))
+                # print(lines[i])
+                elts = list(map(int, lines[i].strip().split(separator)))
                 bottom_vertex = elts[0]
                 top_vertex = elts[1]
 
@@ -46,7 +55,12 @@ class BipartiteGraph(Graph):
 
 
     @classmethod
-    def configuration_model(cls, degree_dist_top=None, degree_dist_bottom=None):
+    def configuration_model(cls, degree_dist_top=None, degree_dist_bottom=None, graph=None):
+
+        if degree_dist_top == None and degree_dist_bottom==None :
+            degree_dist_top = graph.get_all_degrees(graph.top)
+            degree_dist_bottom = graph.get_all_degrees(graph.bottom)
+
         top_stubs = [k for k,v in degree_dist_top.items() for i in range(v)]
         bottom_stubs = [k for k,v in degree_dist_bottom.items() for i in range(v)]
 
@@ -59,9 +73,49 @@ class BipartiteGraph(Graph):
             new_top[top_stubs[i]].add(bottom_stubs[i])
             new_bottom[bottom_stubs[i]].add(top_stubs[i])
 
-        return cls(new_top,new_bottom)
+        cm_graph = cls(new_top,new_bottom)
+        print(cm_graph.get_nb_edges(),"/",sum(degree_dist_top.values()))
+        return cm_graph
 
 
+
+    def save_graph(self,filename):
+        with open('generated/'+filename+'_top.graph', 'w') as writer:
+            for k,v in self.top.items():
+                writer.write(str(k))
+                for elt in v:
+                    writer.write(" ")
+                    writer.write(str(elt))
+                writer.write("\n")
+
+        with open('generated/'+filename+'_bottom.graph', 'w') as writer:
+            for k,v in self.bottom.items():
+                writer.write(str(k))
+                for elt in v:
+                    writer.write(" ")
+                    writer.write(str(elt))
+                writer.write("\n")
+
+
+
+    @classmethod
+    def read_graph(cls,filetop,filebottom):
+
+        def read_set(filename):
+            with open('generated/'+filename+'.graph', 'r') as filehandle:
+                lines = filehandle.readlines()
+
+            set1 = defaultdict(set)
+            for line in lines:
+                words = line.split()
+
+                k = int(words[0])
+                v = set(map(lambda i:int(i),words[1:]))
+    #             print(v)
+                set1[k] = v
+            return set1
+
+        return cls(read_set(filetop),read_set(filebottom))
 
 
 #==============================================================================
@@ -262,35 +316,11 @@ class BipartiteGraph(Graph):
             Sx_consensus = self.get_consensus_set(Sx,self.top)
             if len(Sx_consensus) >1:
                 bicliques.add(tuple( [frozenset(Sx), frozenset(Sx_consensus)] ))
-        print("bicliques found",bicliques)
+        # print("bicliques found",bicliques)
         if noverlap:
-            bicliques = self.remove_overlap(strategy,bicliques) # Pattern can be improved
+            bicliques = self.remove_overlap(bicliques,strategy) # Pattern can be improved
         return bicliques
 
-
-
-    # def remove_overlap(self,bicliques_all):
-    #     # DETECTE LES CHEVAUCHEMENTS
-    #     bicliques_all = bicliques_all.copy()
-    #     bicliques_noverlap = set()
-    #     noverlap_edges = set()
-    #     visited = set()
-    #
-    #     while bicliques_all:
-    #         current_top, current_bottom = random.sample(bicliques_all,1)[0]
-    #         current = (current_top,current_bottom)
-    #         visited.add(current)
-    #         bicliques_all.remove(current)
-    #
-    #         current_edges = set(itertools.product(current_top, current_bottom))
-    #
-    #         if not noverlap_edges.intersection(current_edges):
-    #             bicliques_noverlap.add(current)
-    #             noverlap_edges.update(tuple(current_edges))
-    #
-    #     return bicliques_noverlap
-    #
-    #
 
 
     def remove_overlap(self,bicliques_all, strategy = "random"):
@@ -307,10 +337,9 @@ class BipartiteGraph(Graph):
             bicliques_found = sorted(bicliques_found, key=lambda biclique: len(list(chain.from_iterable(biclique))),reverse = True)
 
         bicliques_found_q = queue.Queue()
-        [bicliques_found_q.put(i) for i in bicliques_all]
+        [bicliques_found_q.put(i) for i in bicliques_found]
 
         while not bicliques_found_q.empty():
-
             current_top, current_bottom = bicliques_found_q.get()
             current_biclique = (current_top,current_bottom)
 
@@ -327,9 +356,9 @@ class BipartiteGraph(Graph):
         return set(selected.values())
 
 
+
     def get_degree_to_bicliques(self,bicliques):
         # DETECTE LES NOEUDS QUI FONT "PONTS" ENTRE DEUX BICLIQUES
-        # detected = detected_or.copy()
         count_all = Counter({})
         for biclique in bicliques:
             count_current = Counter(chain.from_iterable(biclique))
@@ -367,9 +396,9 @@ class BipartiteGraph(Graph):
         return bottom
 
 
-    def build_subgraphs(self):
+    def tripartite_model(self,strategy = "random", noverlap=True):
 
-        max_bicliques = self.find_all_maximal()
+        max_bicliques = self.find_all_maximal(strategy,noverlap)
 
         # CONSTRUCT SUB12 AND SUB13
         top12 = defaultdict(set)
@@ -508,8 +537,3 @@ class BipartiteGraph(Graph):
     #     return nb_neighbors_edges_removed/nb_neighbors_edges_all
     #
     #
-
-#
-#         # 750170420C16BQZNV
-#         0768768187
-# huynhalice0320@gmail.com
