@@ -52,7 +52,7 @@ class UnipartiteGraph(Graph):
             d = defaultdict(set)
 
             for i in range (start, len(lines)):
-                elts = list(map(int, lines[i].split(separator)))
+                elts = list(map(int, lines[i].strip().split(separator)))
                 extremity1 = elts[0]
                 extremity2 = elts[1]
 
@@ -176,33 +176,33 @@ class UnipartiteGraph(Graph):
 
 
 
-    @classmethod
-    def watts_strogatz(self, n, k, p):
-        """
-        Constructs an instance of the class using Watts-Strogatz model.
-        Args:
-            n (int)   : number of vertices.
-            k (int)   : each vertex is connected to its k nearest neighbors.
-            p (float) : probability to rewire any edge. Must be between 0 and 1.
-
-        Returns:
-            Graph : A instance of the class.
-        """
-        assert p>=0 and p<=1, "The probability p must be between 0 and 1."
-
-        G = self.ring_lattice(n,k)
-        nb_edges = len(G.edges)
-        halfk = k//2
-
-        for lap in range(halfk):
-            for i in range (lap, nb_edges, halfk):
-                current_vertex = G.edges[i][0]
-                if np.random.binomial(1, p):
-                    choice_set = set(G.vertices) - set(G.get_neighbors(current_vertex)) - {current_vertex}
-                    if choice_set:
-                        new_extremity = random.choice(list(choice_set))
-                        G.edges[i] = [current_vertex,new_extremity]
-        return G
+    # @classmethod
+    # def watts_strogatz(self, n, k, p):
+    #     """
+    #     Constructs an instance of the class using Watts-Strogatz model.
+    #     Args:
+    #         n (int)   : number of vertices.
+    #         k (int)   : each vertex is connected to its k nearest neighbors.
+    #         p (float) : probability to rewire any edge. Must be between 0 and 1.
+    #
+    #     Returns:
+    #         Graph : A instance of the class.
+    #     """
+    #     assert p>=0 and p<=1, "The probability p must be between 0 and 1."
+    #
+    #     G = self.ring_lattice(n,k)
+    #     nb_edges = len(G.edges)
+    #     halfk = k//2
+    #
+    #     for lap in range(halfk):
+    #         for i in range (lap, nb_edges, halfk):analyze
+    #             current_vertex = G.edges[i][0]
+    #             if np.random.binomial(1, p):
+    #                 choice_set = set(G.vertices) - set(G.get_neighbors(current_vertex)) - {current_vertex}
+    #                 if choice_set:
+    #                     new_extremity = random.choice(list(choice_set))
+    #                     G.edges[i] = [current_vertex,new_extremity]
+    #     return G
 
 
 
@@ -236,6 +236,22 @@ class UnipartiteGraph(Graph):
 # ANALYSIS
 #===============================================================================
 
+
+    # def get_clustering_coeff_local(self, vertex, set1):
+    #     CCV_all = [] #list to store all local CC
+    #
+    #     for vertex, kv in self.get_all_degrees(set1).items():
+    #         if kv > 1:
+    #             neighbors = self.get_neighbors(vertex,set1)
+    #             nv = sum( len(self.get_neighbors(neighbor,set1) & neighbors) for neighbor in neighbors)/2 #nb edges between neighbors
+    #             CC_local = (2*nv)/(kv*(kv-1))
+    #             CCV_all.append(CC_local)
+    #
+    #     return np.mean(CCV_all)
+    #
+    #     kv = self.get_all_degrees(set1).get(vertex)
+    #     if kv > 1:
+    #     CC_local = (2*nv)/(kv*(kv-1))
 
     def get_clustering_coeff(self,set1):
         """
