@@ -1,0 +1,333 @@
+% *-----------------------------------------------------------*
+% *         Page de Garde (basé sur le modèle UPMC)
+% * Dernière modif le : 2012/02/13
+% *-----------------------------------------------------------*
+% * README: 
+% *   - se compile avec pdflatex
+% *   - l'entête de ce fichier sert pour générer une page
+% *     unique. Ce texte latex peut s'inclure (partie comprise 
+% *     entre les lignes et  ) dans un document existant.
+% *-----------------------------------------------------------*
+
+% - - - - - - - entête pour avoir une page unique 
+\documentclass[11pt]{report}
+\usepackage[english]{babel}
+%\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+
+%\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{tabularx,tabulary}
+\usepackage{svg}
+\usepackage{blindtext}
+\usepackage{hyperref} % clickable table of contents
+\usepackage{fancyhdr}
+\usepackage{amsmath} % equations
+
+\hypersetup{ % hyperref - clickable table of contents
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\topmargin}{-2cm}
+\title{Mon super titre}     
+\date{ma superbe date} 
+\author{Cécile Pov}
+
+
+
+
+
+ % NO BREAKKING WORDS !
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+\pagestyle{fancy}
+
+
+% ENTETE ET PIED DE PAGE 
+%\newcommand{\markedsection}[2]{\section[#2]{#2%
+%\sectionmark{#1}}
+%\sectionmark{#1}}
+
+%\newcommand{\markedsubsection}[2]{\subsection[#2]{#2%
+%\subsectionmark{#1}}
+%\subsectionmark{#1}}
+
+
+
+
+
+\begin{document}
+
+% - - - - - - - début de la page 
+\thispagestyle{empty}
+
+%\includegraphics[scale=0.12]{upmc-logo.png}
+\begin{figure}[t]
+
+\minipage{0.30\textwidth}
+%  \includegraphics[width=\linewidth]{./img/logo_sorbonne.png}
+  \includesvg[width=\linewidth]{./img/logo_esiee}
+\endminipage\hfill
+\minipage{0.25\textwidth}
+   %\hspace*{-2.2cm}
+  \includegraphics[width=1.5\textwidth]{./img/logo_sorbonne.png}
+\endminipage\hfill
+\minipage{0.3\textwidth}
+\hspace*{2.2cm}
+\vspace*{0.3cm}
+  \includesvg[width=0.6\linewidth]{./img/logo_lip6}
+\endminipage
+\end{figure}
+
+{\large
+
+\vspace*{1cm}
+
+\begin{center}
+
+{\bf MASTER DEGREE INTERNSHIP RESEARCH PAPER}
+
+\vspace*{0.4cm}
+
+Computer Science Department 
+%\\ [2ex]
+%{\bf Informatique}\ \\ 
+
+\vspace*{0.1cm}
+
+ESIEE Paris
+
+\vspace*{1cm}
+
+\rule{\linewidth}{0.5pt}
+{\Large {\sc A study of a random model preserving maximal bicliques in bipartite graphs}}
+\rule{\linewidth}{1pt}
+
+\vspace*{0.5cm}
+By\ \\
+
+
+\vspace*{0.5cm}
+
+
+{\Large {\bf Cécile POV}}
+
+\vspace*{1cm}
+
+
+At
+
+\vspace*{0.5cm}
+
+{\Large {\bf Complex Networks team, LIP6} \\
+Sorbonne University and French National Center for Scientific Research (UMR 7606 Sorbonne University - CNRS)}
+
+
+
+%Pour obtenir le grade de \ \\[1ex]
+%{\bf DOCTEUR de l'UNIVERSIT\'E PIERRE ET MARIE CURIE} \ \\
+
+\vspace*{1cm}
+
+\end{center}
+
+%\flushleft{Sujet de la th\`ese :\ \\
+%\ \\
+%{\Large {\bf Le titre de ma Thèse \\ }}
+%  
+
+\vspace*{1.5cm} 
+\flushleft{Submitted in October 2020}\\[2ex]
+\flushleft{Defense Commitee composed of:}\\[1ex]
+\flushleft{\begin{tabularx}{\textwidth}{lXX}
+Mr Fabien TARISSAN & Complex Networks - LIP6, CNRS & Internship supervisor\\
+Mr Lionel TABOURIER  &  Complex Networks - LIP6 & Internship supervisor \\
+Mr Nabil Hassan MUSTAFA  & ESIEE Paris, LIGM & University supervisor
+\end{tabularx}}
+
+
+}
+% - - - - - - - fin de la page 
+ 
+
+\tableofcontents
+
+
+\newpage
+\section*{Abstract}
+Many large real-world networks have a 
+
+Keywords: bipartite graphs, configuration model, tripartite encoding, maximal bicliques
+
+
+%\markedsection{Introduction}{Introduction}
+\markedsubsection{Erdős–Rényi model}{Erdős–Rényi model}
+
+
+Number of possible edges (without self-loops):
+$$\binom{n}{k} = \dfrac{n!}{2!(n-2)!} = 
+\dfrac{n(n-1)(n-2)!}{2(n-2)!} = \dfrac{n(n-1)}{2}$$
+
+The different instances of $G(n,p)$ appears with different frequencies, so it is a distribution of graphs, not a family.
+
+$$P(G)=p^{m}\times(1-p)^{M-m}$$
+
+$$P(m)=\binom{n}{k}\times  p^{m}\times(1-p)^{M-m}$$
+
+\markedsubsection{}{Binomial distribution}
+
+$$P(2) = \binom{\frac{3 \times 2}{2}}{2} \times \binom{1}{2}^{2}$$
+
+\markedsubsection {} {Clustering coeff}
+
+The global clustering coefficient $CC(G)$ measures the cliquishness of a graph $G$, i.e.how well the vertices are connected together. It gives a score between 0 and 1: the closer to one the score is, the better the vertices are connected together.
+
+The global clustering coefficient is computed as follows (in general we consider only vertices  with degree > 1):
+$$CC(G) = mean(CC(v)) \ \  v \in G $$ 
+
+
+The local clustering coefficient for a vertex $v$ is equal to:
+$$CC(v) = \dfrac{2Nv}{kv( kv-1) }$$
+
+With : 
+
+\begin{itemize}
+    \item $Kv$ the degree of the vertex $v$;
+    \item $Nv$ the number of edges between neighbors of v;
+\end{itemize}
+
+
+
+CC(V) is a "ratio":
+
+\begin{itemize}
+    \item $2Nv$ is the actual number of existing interconnections (multiplied by 2 because an edge links 2 nodes);
+    \item $Kv(Kv-1)$ is the maximum number of possible interconnections
+\end{itemize}
+
+
+There is at most $Kv(Kv-1)/2$ edges between neighbors.
+
+
+\markedsubsection{}{Assortativity}
+
+
+Assortativity measures the preference for vertices with same degree to connect together. In assortative networks, hubs are connected together ("big ones with big ones and small ones with small ones); on the contrary, high degree nodes tends to connect to low degree nodes in disassortative networks.
+
+Pearson correlation coefficient measures the linear correlation between two variables $X$ and $Y$.
+In our case, the assortativity coefficient is the Pearson correlation coefficient of degree between pairs of linked nodes.
+
+We consider:
+
+\begin{itemize}
+    \item $x$ as the initial extremity of the node;
+    \item $y$ as the terminal extremity.
+\end{itemize}
+
+
+Since we are working with undirected graph in this part on the project, we must consider each edge twice (edges $(i,j)$ and $(j,i)$), so in our case we have 
+$2 \times \textrm{total\_nb\_edges}$ samples.
+
+$r$ has a value between $+1$ and $-1$ : 
+\begin{itemize}
+	\item $r=1$  : total positive linear correlation between $x$ and $y$;
+	\item $r=0$  : no linear correlation between $x$ and $y$;
+	\item $r=-1$ : total negative linear correlation between $x$ and $y$.
+\end{itemize}
+
+$$\newcommand \xdiff    {(x_{i}-\overline {x})}
+\newcommand   \ydiff    {(y_{i}-\overline {y})}
+\newcommand   \sumassort{\sum_{i=1}^{n}}
+r_{xy} = \dfrac{\sumassort \xdiff \ydiff } {\sqrt{\sumassort \xdiff^{2} \sumassort \ydiff^{2}}}$$
+
+With:
+- n the number of samples;
+- $\overline{x}$ the mean of all $x_{i}$;
+- $\overline{y}$ the mean of all $y_{i}$.
+
+
+\markedsubsection{}{Min-Max clustering}
+
+$$cc_{\bullet}(u,v)=\dfrac{\mid N(u)\cap N(v) \mid}
+						  {\mid N(u)\cup N(v) \mid} = \dfrac{common}{all}$$
+						  
+$$cc_{\bullet}(u,v)=\dfrac{\mid N(u)\cap N(v) \mid}
+						  {min(\mid N(u)\cup N(v) \mid)}$$
+		
+$$cc_{\bullet}(u,v)=\dfrac{\mid N(u)\cap N(v) \mid}
+						  {max(\mid N(u)\cup N(v) \mid)}$$				  
+
+\markedsubsection{}{Configuration Model}
+
+Probability that 2 nodes are connected:
+$$p_{ij} = \dfrac{k_{i}k_{j}}{2m-1}$$
+
+\markedsubsection{}{Damaschke}
+$\sigma(A) = \cap_{v\in A} N(v)$
+$$\phi(A) = \sigma(\sigma(A))$$
+
+$$\phi(\phi(A)) = \phi(A)$$
+
+
+\subsection{Redundancy}
+
+$$rc(v)= \dfrac{\mid \{\{u,w\} \subseteq N(v), \exists v' \neq v, ()   ff \mid}{•}$$
+\end{document}
+
+
+
+%\documentclass{article}
+%
+%\usepackage{graphicx}
+%\usepackage{subfigure}
+%\usepackage{tabularx,tabulary}
+%\usepackage{svg}
+%\usepackage{blindtext}
+%
+%
+%\begin{document}
+%
+%
+%%\begin{titlepage}
+% 
+%
+%\begin{figure}[t]
+%
+%
+%\minipage{0.32\textwidth}
+%%  \includegraphics[width=\linewidth]{./img/logo_sorbonne.png}
+%  \includesvg[width=\linewidth]{./img/logo_esiee}
+%\endminipage\hfill
+%\minipage{0.32\textwidth}
+%  \includegraphics[width=1.5\textwidth]{./img/logo_sorbonne.png}
+%\endminipage\hfill
+%%\minipage{0.32\textwidth}%
+%%  \includesvg[width=0.6\linewidth]{./img/logo_lip6}
+%%\endminipage
+%\end{figure}
+%
+%
+%\title{\rule{\linewidth}{1pt}
+%A study of a random model preserving maximal bicliques in bipartite graphs
+%\rule{\linewidth}{1pt}}
+%
+%
+%
+%
+%
+%%\end{titlepage}
+%
+%
+%\end{document}
+
+
