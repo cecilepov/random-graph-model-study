@@ -35,12 +35,15 @@ from itertools import chain
 from functools import reduce
 from copy import deepcopy
 from abc import ABC,abstractmethod
+from collections import defaultdict
+from collections import namedtuple
+
 
 # Authorship information
 __author__  = "Pov Cécile"
 __credits__ = ["Tabourier Lionel","Tarissan Fabien"]
 __version__ = "1.0"
-__date__    = "24/06/2020"
+__date__    = "10/07/2020"
 __email__   = "cecile.pov@gmail.com"
 
 
@@ -150,37 +153,43 @@ class Graph(ABC):
 
 
 
-    def depth_first_search(self, vertex, cc_vertex, visited,dico, value):#toggle):
-        """
-        Computes depth-first search (DFS) algorithm starting from a vertex.
-        """
-        visited.append(vertex)
-        cc_vertex.append(vertex)
-        set1 = dico.get(value)
-
-        neighbors = self.get_neighbors(vertex,set1)
-        for neighbor in neighbors:
-            if neighbor not in visited:
-                new_value = not value
-                cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,dico, new_value)
-
-        return cc_vertex
 
 
-    def get_connected_components(self,set1,set2):
-        """
-        Returns a list of list containing the connected components.
-        [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
-        """
-        dico  = {True:set1, False:set2}
-        visited = []
-        cc_all = []
-
-        for vertex in set1:
-            if vertex not in visited:
-                cc_vertex = []
-                cc_all.append(self.depth_first_search(vertex, cc_vertex, visited, dico,True))
-        return cc_all
+    # def depth_first_search(self, vertex, cc_vertex, visited,dico, value):#toggle):
+    #     """
+    #     Computes depth-first search (DFS) algorithm starting from a vertex.
+    #     """
+    #     visited.append(vertex)
+    #     cc_vertex.append(vertex)
+    #     set1 = dico.get(value)
+    #
+    #     neighbors = self.get_neighbors(vertex,set1)
+    #     for neighbor in neighbors:
+    #         if neighbor not in visited:
+    #             new_value = not value
+    #
+    #             cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited,dico, new_value)
+    #             print("visited",visited)
+    #             print("cc_vertex",cc_vertex)
+    #     return cc_vertex
+    #
+    #
+    # def get_connected_components(self,set1,set2):
+    #     """
+    #     Returns a list of list containing the connected components.
+    #     [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
+    #     """
+    #     dico  = {True:set1, False:set2}
+    #     visited = []
+    #     cc_all = []
+    #
+    #     for vertex in set1:
+    #         if vertex not in visited:
+    #             cc_vertex = []
+    #             cc_all.append(self.depth_first_search(vertex, cc_vertex, visited, dico,True))
+    #             print("new_cc")
+    #     return cc_all
+    #
 
 
 

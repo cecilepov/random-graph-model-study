@@ -373,6 +373,35 @@ class UnipartiteGraph(Graph):
 
 
 
+    def depth_first_search(self, vertex, cc_vertex, visited):
+        """
+        Computes depth-first search (DFS) algorithm starting from a vertex.
+        """
+        visited.append(vertex)
+        cc_vertex.append(vertex)
+
+        #print(cc_vertex)
+        for neighbor in self.get_neighbors(vertex,self.all):
+            if neighbor not in visited:
+                cc_vertex = self.depth_first_search(neighbor, cc_vertex, visited)
+        return cc_vertex
+
+
+    def get_connected_components(self):
+        """
+        Returns a list of list containing the connected components.
+        [ [CC1_vertex1, CC1_vertex2, CC2_vertex3], [CC2_vertex1, CC2_vertex2]]
+        """
+        visited = []
+        cc_all = []
+
+        for vertex in self.all:
+            if vertex not in visited:
+                cc_vertex = []
+                cc_all.append(self.depth_first_search(vertex, cc_vertex, visited))
+        return cc_all
+
+
     def analyze(self,set):
         start_time = time.time()
         self.get_degree_distribution(set)
@@ -382,11 +411,22 @@ class UnipartiteGraph(Graph):
         df.loc["nb_vertices"] = self.get_nb_vertices()
         df.loc["nb_edges"] = self.get_nb_edges()
         df.loc["density"] = self.get_density()
+        print("before CC")
         df.loc["clustering_coeff"] = self.get_clustering_coeff(set)
-        df.loc["nb_connected_components"] = len(self.get_connected_components(set,set))
+        print("after CC")
+        # df.loc["nb_connected_components"] = len(self.get_connected_components())
+        print("before diameter")
+
         df.loc["diameter"] = self.get_diameter(set)
+        print("after diameter")
+
         df.loc["Assortativity"] = self.get_assortativity(set)
+        print("before path length")
+
+
         df.loc["path_length"] = self.get_path_length(set)
+        print("after path length")
+
         df.loc["degree_avg"] = self.get_degree_mean(set)
         df.loc["degree_sum"] = self.get_degrees_sum(set)
         df.loc["degree_min"] = self.get_degree_min(set)
