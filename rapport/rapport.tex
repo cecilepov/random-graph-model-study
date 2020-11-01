@@ -31,6 +31,7 @@
 \usepackage{indentfirst} %indent first paragraph after section
 \usepackage{placeins} %floatBarrier
 \usepackage[font=small,labelfont=bf]{caption} % bold "Figure 1.2" label
+\usepackage{makecell}
 
 
 %\definecolor{mypink}{RGB}{232, 95, 70}
@@ -53,7 +54,8 @@
 \date{ma superbe date} 
 \author{Cécile Pov}
 
-
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{2}
 
 
  % NO BREAKKING WORDS !
@@ -118,7 +120,7 @@
 
 \begin{center}
 
-{\bf END-OF-DEGREE INTERNSHIP REPORT}
+{\bf MASTER DEGREE INTERNSHIP REPORT}
 
 \vspace*{0.4cm}
 
@@ -258,7 +260,7 @@ From a mathematical point of view, complex networks are viewed as graphs, where 
 
 
 % On Power-Law Relationships of the Internet Topology faloustos
-At the end of the last century, with major progress in network science and computer performance, it has been found out that, despite the apparent randomness of the World Wide Web network, the Internet topology exhibits some surprisingly simple power-law distribution for the measured features, such as degree \cite{faloutsos}. These new results contrast with the general belief that complex networks can be modeled as either regular graphs (same number of edges for every vertice and predictable neighbors) or completely random graphs (edges appear totally randomly). Further works revealed that most real-world networks – in opposition to graphs generated theoretically or with a model – share non-trivial properties, such as a skewed degree distribution, a low global density, a high local density, etc. This discovery immediately reveal a new approach to analyze complex networks.
+At the end of the last century, with major progress in network science and computer performance, it has been found out that, despite the apparent randomness of the World Wide Web network, the Internet topology exhibits some surprisingly simple power-law distribution for degree \cite{faloutsos} and other non-trivial distributions for other measured metrics. These new results confirm that complex networks can be modeled as either regular graphs (same number of edges for every vertice and predictable neighbors) or completely random graphs (edges appear totally randomly). Further works revealed that most real-world networks – in contrast with graphs generated theoretically or with a model – share non-trivial properties, such as a skewed degree distribution, a low global density, a high local density, etc. This discovery immediately reveal a new approach to analyze complex networks.
 
 \medbreak
 
@@ -269,9 +271,9 @@ Since the beginning of 2000s, many studies have been conducted in order to captu
 
 \medbreak
 
-For example, among those theoretical models that have been built, the Erdős–Rényi model attempts to reproduce the density of real-world networks. As regards the degree distribution, the Barabási–Albert model succeeds in generating a heterogeneous (scale-free) degree distribution as observed in most real-world networks \cite{barabasi}. Moreover, the Watts–Strogatz model can reproduce high local density graphs \cite{watts_strogatz}, while the Configuration Model generates random graphs with a given degree sequence \cite{newman}.
+The well-known Erdős–Rényi model already attempts to reproduce the density of real-world networks.In regards to the degree distribution, among those new theoretical models that have been built, the Barabási–Albert model succeeds in generating a heterogeneous (scale-free) degree distribution as observed in most real-world networks \cite{barabasi}. Moreover, the Watts–Strogatz model can reproduce high local density graphs \cite{watts_strogatz}, while the Configuration Model generates random graphs with a given degree sequence \cite{newman}.
 
-However, none of those models should be viewed as a fully realistic real-world network. In fact, both the Erdős–Rényi and  Barabási–Albert models fail at producing graphs with a high local clustering, as well as the Configuration Model. With Watts–Strogatz model, this property is preserved but we end up with an unrealistic degree distribution. In the end, despite all the different attempts and models that have been developed, we are not able to generate one realistic graph that preserves, at the same time, \textit{all} the non-trivial properties observed in most real-world networks. This problem is still an open issue.
+However, none of those models should be viewed as a fully realistic real-world network. In fact, both the Erdős–Rényi and  Barabási–Albert models fail at producing graphs with a high local density, as well as the Configuration Model. With Watts–Strogatz model, this property is preserved but we end up with an unrealistic degree distribution. In the end, despite all the different attempts and models that have been developed, we are not able to generate one realistic graph that preserves, at the same time, \textit{all} the non-trivial properties observed in most real-world networks. This problem is still an open issue.
 
 \medbreak
 
@@ -285,17 +287,18 @@ Considering various applications of network science in critical tasks and phenom
 
 \bigbreak
 
-This inability to simulate a realistic network is not restricted to 1-mode complex networks, i.e. networks that carry interactions between entities that have the same nature. In fact, this problem also occurs with 2-mode networks. These networks, also called affiliation networks, represent interactions between two types of entities. Many real-world networks actually have a 2-mode nature. For example, if we consider the actors collaboration dataset (1-mode), it is in fact more natural to consider the actors-movies dataset (2-mode) which associates each actor to the movies he played in. Similarly, for the co-authorship network (1-mode), it is more realistic to consider the author-paper network (2-mode), where authors are linked to the papers they have signed \cite{latapy}. 
+This inability to simulate a realistic network is not restricted to 1-mode complex networks, i.e. networks that carry interactions between entities that have the same nature. In fact, this problem also occurs with 2-mode networks. These networks represent interactions between two types of entities. Many real-world networks actually have a 2-mode nature. For example, if we consider the actors collaboration dataset (1-mode), it is in fact more natural to consider the actors-movies dataset (2-mode) which associates each actor to the movies he played in. Similarly, for the co-authorship network (1-mode), it is more realistic to consider the author-paper network (2-mode), where authors are linked to the papers they have signed \cite{latapy}. 
 
 \medbreak
 
-In particular, F. Tarissan \& L. Tabourier (2013) proposed a random model that relies on maximal bicliques to preserve overlaps in bipartite networks, by exploiting the tripartite version of the configuration model \cite{fabien_lionel}\cite{coupechoux}.
+In particular, F. Tarissan \cite{fabien_lionel} proposed a random model that relies on maximal bicliques to preserve overlaps in bipartite networks, by exploiting the tripartite version of the configuration model \cite{fabien_lionel}\cite{coupechoux}.
 
 \medbreak
 
-The purpose of this work is to tackle this realistic model for complex networks problem, by analyzing the purposed model. The aim of our work is to both validate and further current knowledge of this model, by examining the results on other datasets, and by applying the same methodology on other measurements tools. 
-
-
+The purpose of this work is to tackle this realistic model for complex networks problem, by analyzing the purposed model. The aim of our work is to both validate and further current knowledge of this model, by examining other characteristics of real-world network such as redundancy, or clustering coefficient. 
+%by examining the results on other datasets, and by applying the same methodology on other measurements tools. 
+%
+%
 
 %
 %
@@ -594,7 +597,9 @@ Thus, it is still necessary to consider the original bipartite graph, because it
 %$\rightarrow$ beaucoup d'information est encodée dans la structure bipartie. Il y a perte d'information lors de la projection.
 %}
 
-\section{Features to measure real networks}
+\section{Network properties}
+
+Several tools and metrics are used to analyze the properties and characteristics of a network. Most of these metrics directly come from graph theory. 
 
 \subsection{Feature for both unipartite and bipartite graphs}
 
@@ -606,7 +611,7 @@ $$N(v) = \{u \in V | (u,v) \in E\}$$.
 Vertices in $N(v)$ are called \textit{neighbors} of $v$, and we say that they are \textit{adjacent} to $v$.
 
 
-For directed graph, we consider 2 family of neighbourhood: 
+For directed graph, we consider 2 families of neighbourhood: 
 \begin{itemize}[noitemsep]
     \item in-neighbourhood: $N^{in}(v) = \{u \in V | (u,v) \in E\}$. 
 
@@ -616,6 +621,9 @@ For directed graph, we consider 2 family of neighbourhood:
 The neighbourhood of a vertex $v$ can be seen as a subgraph of $G$, composed of vertex neighbors of $v$ and edges between them. We say that this graph is $induced$ by the neighbourhood of $v$. 
 
 %https://mathworld.wolfram.com/GraphNeighborhood.html 
+
+Studying the neighbourhood of a particular vertex / actor is interesting in network analysis, since it may give information about the nature of the connection: in a friendship network, where people are represented as vertices and friendship as edges, some nodes may tend to connect with vertices with a high degree ("people person") or people that have similar hobbies.
+
 
 \subsubsection{Density}
 
@@ -691,19 +699,19 @@ The path length $L$ is the number of edges in the shortest path between two vert
 
 Assortativity measures the preference for vertices with same degree to connect together. In assortative networks, hubs are connected together ("big ones with big ones and small ones with small ones"); on the contrary, high degree nodes tends to connect to low degree nodes in disassortative networks.
 
-Pearson correlation coefficient measures the linear correlation between two variables $X$ and $Y$.
-In our case, the assortativity coefficient is the Pearson correlation coefficient of degree between pairs of linked nodes.
+In the context of graphs, the assortativity coefficient is the Pearson correlation coefficient of degree between pairs of linked nodes. Pearson correlation coefficient measures the linear correlation between two variables $X$ and $Y$.
+
 
 We consider:
 
 \begin{itemize}[noitemsep]
-    \item $x$ as the initial extremity of the node;
-    \item $y$ as the terminal extremity.
+    \item $x$ as the initial endpoint of the node;
+    \item $y$ as the terminal endpoint.
 \end{itemize}
 
 
-Since we are working with undirected graph in this part on the project, we must consider each edge twice (edges $(i,j)$ and $(j,i)$), so in our case we have 
-$2 \times \textrm{total\_nb\_edges}$ samples.
+Since we are working with undirected graph, we must consider each edge twice (edges $(i,j)$ and $(j,i)$), so in our case we have 
+$2 \times m $ samples.
 
 $r$ has a value between $+1$ and $-1$ : 
 \begin{itemize}[noitemsep]
@@ -712,6 +720,8 @@ $r$ has a value between $+1$ and $-1$ :
 	\item $r=-1$ : total negative linear correlation between $x$ and $y$.
 \end{itemize}
 
+\noindent
+The Pearson correlation is computed as follows:
 $$\newcommand \xdiff    {(x_{i}-\overline {x})}
 \newcommand   \ydiff    {(y_{i}-\overline {y})}
 \newcommand   \sumassort{\sum_{i=1}^{n}}
@@ -726,6 +736,48 @@ With:
 \item $\overline{y}$ the mean of all $y_{i}$.
 \end{itemize}
 
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.3\columnwidth]{img/assortativity_example2.pdf}
+\caption{Degree $\delta$ of each vertex of the $\top$-projection in Fig.\ref{fig:projection_example}. }
+
+\label{fig:assortativity_example2}
+\end{figure}
+\FloatBarrier
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccclllccc}
+\cline{1-3} \cline{7-9}
+edge  & $x_i$ & $y_i$ &  &  &  & \multicolumn{1}{c}{edge} & $x_i$ & $y_i$ \\ \cline{1-3} \cline{7-9} 
+(A,B) & 2   & 4   &  &  &  & (B,A)                     & 4   & 2   \\
+(A,D) & 2   & 3   &  &  &  & (D,A)                     & 3   & 2   \\
+(B,E) & 4   & 3   &  &  &  & (E,B)                     & 3   & 4   \\
+(B,D) & 4   & 3   &  &  &  & (D,B)                     & 3   & 4   \\
+(B,C) & 4   & 2   &  &  &  & (C,B)                     & 2   & 4   \\
+(C,E) & 2   & 3   &  &  &  & (E,C)                     & 3   & 2   \\ \cline{1-3} \cline{7-9} 
+\end{tabular}
+\caption{Edges to consider for calculating the assortativity coefficient of the $\top$-projection graph of Fig.\ref{fig:projection_example}. Since it is a undirected graph, both edges $(x,y)$ and $(y,x)$ must be considered, so there is $s = 12$ samples. Since
+$\overline{y} = \overline{x} = \dfrac{1}{s}  \sum_{} x_i = \dfrac{1}{12} \times 36 = 3$, we have
+$\sum_{i=1}^{n} (x_{i}-\overline {x}) (y_{i}-\overline {y}) = -4 $ and
+$\sqrt{\sum_{i=1}^{n} {(x_{i}-\overline {x})}^2
+{(y_{i}-\overline {y})}^2} = \sqrt{8 \times 8} = 8$. Thus, $r_{xy} = -0.5$: there is a negative linear correlation between edges with same degree.}
+\end{table}
+\FloatBarrier 
+
+%hhh
+%$$\newcommand \xdiff    {(x_{i}-\overline {x})}
+% \newcommand   \ydiff    {(y_{i}-\overline {y})}
+% \newcommand   \sumassort{\sum_{i=1}^{n}}
+%\sumassort \xdiff \ydiff = -4 $$
+%jjh
+%$$\newcommand \xdiff    {(x_{i}-\overline {x})}
+% \newcommand   \ydiff    {(y_{i}-\overline {y})}
+% \newcommand   \sumassort{\sum_{i=1}^{n}}
+%\sqrt{\sumassort \xdiff^{2} \sumassort \ydiff^{2}} = \sqrt{8 \times 8}$$}
+
 \subsubsection{Clustering coefficient}
 
 The global clustering coefficient $CC(G)$ measures the cliquishness of a graph $G$, i.e. how well the vertices are connected together. It gives a score between 0 and 1: the closer to one the score is, the better the vertices are connected together. 
@@ -736,14 +788,14 @@ $$CC(G) = mean(CC(v)) \ \  v \in G $$
 
 \noindent
 The local clustering coefficient for a vertex $v$ is equal to:
-$$CC(v) = \dfrac{2Nv}{kv( kv-1) }$$
+$$CC(v) = \dfrac{2 E_{\delta}}{\delta (\delta -1) }$$
 
 \noindent
 With : 
 
 \begin{itemize}[noitemsep]
-    \item $Kv$ the degree of the vertex $v$;
-    \item $Nv$ the number of edges between neighbors of v;
+%    \item $\delta $ the degree of the vertex $v$;
+    \item $E_{\delta}$ the number of edges between neighbors of v;
 \end{itemize}
 
 
@@ -751,139 +803,219 @@ With :
 CC(v) is a "ratio":
 
 \begin{itemize}[noitemsep]
-    \item $2Nv$ is the actual number of existing interconnections (multiplied by 2 because an edge links 2 nodes);
-    \item $Kv(Kv-1)$ is the maximum number of possible interconnections
+    \item $2 E_{\delta}$ is the actual number of existing interconnections (multiplied by 2 because an edge links 2 nodes);
+    \item $\delta (\delta -1)$ is the maximum number of possible interconnections
 \end{itemize}
 
 \noindent
-There is at most $Kv(Kv-1)/2$ edges between neighbors.
-
-\subsubsection{Clique and maximal clique}
-
-% https://trace.tennessee.edu/cgi/viewcontent.cgi?article=1610&context=utk_graddiss
-\subsection{Bipartite features only}
-\subsubsection{cc\_bullet, cc\_bullet\_max, cc\_bullet\_min}
-
-
-$$cc_{\bullet}(u,v)=\dfrac{|N(u)\cap N(v)|}
-						  {|N(u)\cup N(v)|} = \dfrac{common}{all}$$
-						  
-$$cc_{\bullet}(u,v)=\dfrac{|N(u)\cap N(v)|}
-						  {min(|N(u)\cup N(v)|)}$$
-		
-$$cc_{\bullet}(u,v)=\dfrac{|N(u)\cap N(v)|}
-						  {max(|N(u)\cup N(v)|)}$$
-						  				  
-\subsubsection{redundancy}
-
-$$rc(v)= \dfrac{|\{\{u,w\} \subseteq N(v), \exists v' \neq v, (v',u) \in E and (v',w) \in E|}{\dfrac{|N(v)| (|N(v)|-1)}{2}}$$
-
-
-\subsubsection{biclique and maximal biclique}
-
-\section{characterization of real-world networks}
-
-
-\section{Random graphs : State-of-the-art}
-
-
-%Real social networks are often compared to random graphs in order to assess whether their typological structure could be the result of random processes. 
-%
-%Real-world networks 
-
-\subsection{Why study random graphs ?}
-
-Previously, we saw that :
--capture characteristics
-
-\subsection{Erdős–Rényi model}
-
-The Erdős–Rényi model $G(n,p)$ produces a random graph with $n$ vertices, where each possible edge has probability $p$ of existing.
-
-
-
-:
-
-\noindent
-With:
-\begin{itemize}[noitemsep]
-\item n: number of vertices
-\item p: $p \in [0,1$ possibility to connect any pair of vertices.
-\end{itemize}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% ALGORITHM %%
-\begin{figure}[htb]
-\centering
-\begin{minipage}{.7\columnwidth}
-\begin{algorithm}[H]
-\SetAlgoLined
-\SetKwInOut{Input}{input}
-\SetKwInOut{Output}{output}
-\Input{n: number of vertices \newline 
-       p: probability to connect any pair of vertices}
-\Output{a graph G = (V,E)}
-
- \BlankLine
- Add all vertices to G \newline 
- \For{each unique pair of vertices (i,j):}
- {
- 	Connect $i$ and $j$ with probability $p$
- }
- 
- \Return G
-\caption{Erdős–Rényi model - pseudocode}
-\end{algorithm}
-\end{minipage}
-\end{figure}
-%% END ALGORITHM %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+There is at most $\delta (\delta -1)/2$ edges between neighbors.
 
 \begin{figure}[h]%[h!]
 \centering
-\includegraphics[width=1\columnwidth]{img/ER_example.pdf}
-\caption{}
-\label{fig:graphs}
-\end{figure}
+\includegraphics[width=0.25\columnwidth]{img/cc_example.pdf}
+\caption{Clustering coefficient calculations for $\top$-projection in Fig. \ref{fig:projection_example}. In the figure, we explicit the calculation for vertex B: its neighborhood $\delta$ is composed of vertices A,C,D,E (in yellow) and 3 edges (in orange) exist between nodes of $\delta$, so $E_{\delta} = 3$ . So we have
+$CC(B) = \frac{2 E_{\delta}}{\delta (\delta -1)} = \frac{2 \times 3}{4 \times 3} =  \frac{6}{12} = \frac{1}{2}$. And since 
+$CC(A)=1$, 
+$CC(C)=1$
+$CC(D)=\frac{2}{3}$
+$CC(E)=\frac{2}{3}$, the global clustering  coefficient of the graph is $CC(G)= \frac{(1+\frac{1}{2}+1+\frac{2}{3}+\frac{2}{3})}{5} \approx 0,76$}
 
-lorem ipsum 
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[width=1\columnwidth]{img/ER_other_2.pdf}
-\caption{}
-\label{fig:graphs}
+\label{fig:cc_example2}
 \end{figure}
 \FloatBarrier
 
 
 
 
-Number of possible edges (without self-loops):
-$$\binom{n}{k} = \dfrac{n!}{2!(n-2)!} = 
-\dfrac{n(n-1)(n-2)!}{2(n-2)!} = \dfrac{n(n-1)}{2}$$
 
-The different instances of $G(n,p)$ appears with different frequencies, so it is a distribution of graphs, not a family.
+%\subsubsection{Clique and maximal clique}
 
-$$P(G)=p^{m}\times(1-p)^{M-m}$$
+% https://trace.tennessee.edu/cgi/viewcontent.cgi?article=1610&context=utk_graddiss
+\subsection{Bipartite features only}
+\subsubsection{}
 
-$$P(m)=\binom{n}{k}\times  p^{m}\times(1-p)^{M-m}$$
+cc\_bullet, cc\_bullet\_max, cc\_bullet\_min
+$$cc_{\bullet}(u,v)=\dfrac{|N(u)\cap N(v)|}
+						  {|N(u)\cup N(v)|} = \dfrac{common}{all}$$
+						  
+						  
+$$cc_{\bullet}(u,v)=\dfrac{|N(u)\cap N(v)|}
+						  {min(|N(u)|,|N(v)|)}$$
+		
+$$cc_{\bullet}(u,v)=\dfrac{|N(u)\cap N(v)|}
+						  {max(|N(u)|,|N(v)|)}$$
+						  
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.5\columnwidth]{img/cc_bullet_example.pdf}
+\caption{test}
 
-\textbf{Binomial distribution}
+\label{fig:cc_bullet_example}
+\end{figure}
+\FloatBarrier
 
-$$P(2) = \binom{\frac{3 \times 2}{2}}{2} \times \binom{1}{2}^{2}$$
+
+						  
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=1\columnwidth]{img/cc_bullet_maxmin_example.pdf}
+\caption{test}
+
+\label{fig:cc_bullet_maxmin_example}
+\end{figure}
+\FloatBarrier
 
 
 
-\newpage
-\subsection{Watts–Strogatz model}
-\subsection{Barabási–Albert model}
-\subsection{Configuration model}
-Probability that 2 nodes are connected:
-$$p_{ij} = \dfrac{k_{i}k_{j}}{2m-1}$$
+						  				  
+\subsubsection{redundancy}
 
+The redundancy coefficient of a vertex $v$ is the fraction of pairs of neighbors of $v$ that are both linked to other vertices. In a one-mode projection, these vertices would be linked together even if $v$ were not there.
+
+More formally, for any vertex $v$, the redundancy coefficient of $v$ is defined by
+
+
+$$rc(v)= \dfrac{|\{\{u,w\} \subseteq N(v), \exists v' \neq v, (v',u) \in E and (v',w) \in E|}{\dfrac{|N(v)| (|N(v)|-1)}{2}}$$
+
+Where $N(v)$ is the set of neighbors of $v$ in $G$:
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.8\columnwidth]{img/redundancy_example.pdf}
+\caption{test}
+
+\label{fig:redundancy_example}
+\end{figure}
+\FloatBarrier
+
+
+
+
+
+\subsubsection{biclique and maximal biclique}
+
+A biclique $(S_\top,S_\bot)$ of a bipartite graph $G = (\top, \bot, E)$ is subset of $G$  where every vertex of $S_\top \in \top $ is connected to every vertex of $S_\bot \in \bot$. A biclique is maximal if no proper superset of $(S_\top,S_\bot)$ is a biclique, i.e. there is no biclique $(S'_\top, S'_\bot)$ such that $S_\top \subseteq S'_\top$ and $S_\bot \subseteq S'_\bot$.
+
+Informally, a biclique $(S_\top,S_\bot)$ is maximal if, for any vertex $v$ that is added to $S_\top$ (or $S_\bot$), $(S_\top \cap \{v\},S_\bot)$  (or $(S_\top,S_\bot \cap \{v\})$) is not a biclique. It is a complete bipartite subgraph of $G$.
+
+In our case of study, if $S_\top$ or $S_\bot$ are singletons, $(S_\top,S_\bot)$ will not be considered as a biclique.
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.4\columnwidth]{img/biclique_example.pdf}
+\caption{A graph containing 3 bicliques: $b_1 = (\{A,B,C\}, \{1,2\})$ with edges in green, $b_2 = (\{D,E\}, \{4,5,6\})$ in red and  $b_3 = (\{D,E,F\}, \{5,6\})$ in yellow. $(\{A,B\}, \{1,2\})$ is a biclique but not a maximal biclique since $(\{A,B,C\}, \{1,2\})$ is also a biclique. $(\{C\}, \{3,4\})$ is not considered as biclique in our case of study. We note that $b_1$ and $b_2$ are overlapping bicliques because they share the 4 dotted edges.}
+\label{fig:biclique_example}
+\end{figure}
+\FloatBarrier
+
+test
+
+
+%
+%\section{characterization of real-world networks}
+%
+%
+%\section{Random graphs : State-of-the-art}
+%
+%
+%%Real social networks are often compared to random graphs in order to assess whether their typological structure could be the result of random processes. 
+%%
+%%Real-world networks 
+%
+%\subsection{Why study random graphs ?}
+%
+%Previously, we saw that :
+%-capture characteristics
+%
+%\subsection{Erdős–Rényi model}
+%
+%The Erdős–Rényi model $G(n,p)$ produces a random graph with $n$ vertices, where each possible edge has probability $p$ of existing.
+%
+%
+%
+%:
+%
+%\noindent
+%With:
+%\begin{itemize}[noitemsep]
+%\item n: number of vertices
+%\item p: $p \in [0,1$ possibility to connect any pair of vertices.
+%\end{itemize}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ALGORITHM %%
+%\begin{figure}[htb]
+%\centering
+%\begin{minipage}{.7\columnwidth}
+%\begin{algorithm}[H]
+%\SetAlgoLined
+%\SetKwInOut{Input}{input}
+%\SetKwInOut{Output}{output}
+%\Input{n: number of vertices \newline 
+%       p: probability to connect any pair of vertices}
+%\Output{a graph G = (V,E)}
+%
+% \BlankLine
+% Add all vertices to G \newline 
+% \For{each unique pair of vertices (i,j):}
+% {
+% 	Connect $i$ and $j$ with probability $p$
+% }
+% 
+% \Return G
+%\caption{Erdős–Rényi model - pseudocode}
+%\end{algorithm}
+%\end{minipage}
+%\end{figure}
+%%% END ALGORITHM %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[width=1\columnwidth]{img/ER_example.pdf}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%
+%lorem ipsum 
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[width=1\columnwidth]{img/ER_other_2.pdf}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%
+%
+%
+%Number of possible edges (without self-loops):
+%$$\binom{n}{k} = \dfrac{n!}{2!(n-2)!} = 
+%\dfrac{n(n-1)(n-2)!}{2(n-2)!} = \dfrac{n(n-1)}{2}$$
+%
+%The different instances of $G(n,p)$ appears with different frequencies, so it is a distribution of graphs, not a family.
+%
+%$$P(G)=p^{m}\times(1-p)^{M-m}$$
+%
+%$$P(m)=\binom{n}{k}\times  p^{m}\times(1-p)^{M-m}$$
+%
+%\textbf{Binomial distribution}
+%
+%$$P(2) = \binom{\frac{3 \times 2}{2}}{2} \times \binom{1}{2}^{2}$$
+%
+%
+%
+%\newpage
+%\subsection{Watts–Strogatz model}
+%\subsection{Barabási–Albert model}
+%\subsection{Configuration model}
+%Probability that 2 nodes are connected:
+%$$p_{ij} = \dfrac{k_{i}k_{j}}{2m-1}$$
+%
 
 
 
@@ -895,22 +1027,22 @@ $$p_{ij} = \dfrac{k_{i}k_{j}}{2m-1}$$
 % https://www.sciencedirect.com/science/article/pii/S0166218X20302365
 
 \subsubsection{Bicliques and maximal bicliques in nature and society.}
-Bicliques have been studied extensively in many different contexts, as they are well-known and fundamental patterns that forms naturally in most real-world networks. Enumerating and detecting maximal bicliques is relevant task in a wide range of domains, ranging from language theory, artificial intelligence to biology.
+Bicliques have been studied extensively in many different contexts, as they are well-known and fundamental patterns that form naturally in most real-world networks. Enumerating and detecting maximal bicliques is a relevant task in a wide range of domains, ranging from language theory, artificial intelligence to biology.
 
 \medbreak
 %https://www.ncbi.nlm.nih.gov/pmc/articles/PMC154226/
-For instance, in chemistry, enumeration of bicliques can be useful for the analysis of the structure of organic compounds. Also, in gene expression data analysis, different genes will respond in different conditions. The group of genes that have a number of common responses over multiple conditions is considered as a significant gene group. In protein-protein interaction study, hidden topological structures such as cliques and bicliques, consists of biologically relevant functional groups.
+For instance, in chemistry, enumeration of bicliques can be useful for the analysis of the structure of organic compounds. Also, in gene expression data analysis, different genes will respond in different conditions. The group of genes that have many common responses over multiple conditions is considered as a significant gene group. In protein-protein interaction study, hidden topological structures such as cliques and bicliques, consists of biologically relevant functional groups.
 
 
 % http://www.vldb.org/pvldb/vol13/p1359-lyu.pdf
-Furthermore, detection of maximal bicliques also find applications in social and traffic networks. In fact, some interesting interactions can be captured by maximal bicliques. In E-commerce websites, a large group of users purchasing or rating a product together is considered as suspicious, as there is a high probability that they are making fraudulent transactions to increase the
-rankings of their businesses by selling their own product.  In social analysis, bicliques plays a key role in detecting communities.
+Furthermore, detection of maximal bicliques also finds applications in social and traffic networks. In fact, some interesting interactions can be captured by maximal bicliques. In E-commerce websites, a large group of users purchasing or rating a product together is considered as suspicious, as there is a high probability that they are making fraudulent transactions to increase the
+rankings of their businesses by selling their own product.  In social network analysis, bicliques play a key role in detecting communities.
 
 
 \medbreak
 
 \subsubsection{Bicliques and bipartite Configuration Model. }
-Considering various applications of maximal biclique enumeration, it is essential to preserve those patterns in our random models. In particular, the natural extension of Configuration Model to bipartite graphs attempts to preserve the degree distribution of every nodes while shuffling the edges. However, the bicliques completely vanished.  (Fig. \ref{fig:bipartite_configuration_model})
+Considering various applications of maximal biclique enumeration, it is essential to preserve those patterns in our random models. In particular, the natural extension of Configuration Model to bipartite graphs attempts to preserve the degree distribution of every node while shuffling the edges. However, the bicliques completely vanished.  (Fig. \ref{fig:bipartite_configuration_model})
 
 %
 %
@@ -975,14 +1107,14 @@ Considering various applications of maximal biclique enumeration, it is essentia
 \subsection{A tripartite model}
 
 
-To overcome this issue, F. Tarissan and L. Tabourier purpose a random graph model able to preserve both degree distribution and overlapping structures (maximal bicliques) of real-world networks. This model relies of a third level, defining thus a \textit{tripartite graph}, that will encode the bicliques observed in the bipartite graph. 
+To overcome this issue, F. Tarissan and L. Tabourier purpose a random graph model able to preserve both degree distribution and overlapping structures (maximal bicliques) of real-world networks. This model relies on a third level, defining thus a \textit{tripartite graph}, that will encode the bicliques observed in the bipartite graph. 
 %The randomization process is performed on this third level.
 
 \medbreak
 \noindent
 More precisely, the four main steps of this model are the following:
 \begin{enumerate}[noitemsep]
-    \item Emunerate all maximal bicliques in the bipartite graph;
+    \item Enumerate all maximal bicliques in the bipartite graph;
     \item Encode them in a third level of a tripartite graph;
     \item Perform the randomization process on the tripartite graph;
     \item Project the tripartite graph into its corresponding bipartite structure.
@@ -1001,9 +1133,9 @@ Let's consider a bipartite graph $G_{bip}=(X,Y,E)$ (Fig \ref{fig:triparti_graphe
 width=0.5\columnwidth]{img/triparti_graphe_final.pdf}
 \caption{A bipartite graph $G_{bip} = (X,Y,E)$ with $X = \{A,B,C,D,E,F,G\}$ and $Y= \{1,2,3,4,5,6\}$. $G_{bip}$ contains 3 non-overlapping maximal bicliques: 
 $m_\alpha = (\{A,B,C\}, \{1,2\})$ in green,  
-$m_\beta(\{C,D,E\}, \{3,4,5\})$ in red, 
-and $m_\gamma = (\{F,G\}, \{5,6\})$ in yellow. These 3 bicliques forms the set $M$. 
-The set of edges $E_{\overline{M}} = \{(A,3),(E,6)\}$, drawn with dotted lines, defines edges that are not involved in any bicliques in$M$.}
+$m_\beta = (\{C,D,E\}, \{3,4,5\})$ in red, 
+and $m_\gamma = (\{F,G\}, \{5,6\})$ in yellow. These 3 bicliques form the set $M$. 
+The set of edges $E_{\overline{M}} = \{(A,3),(E,6)\}$, drawn with dotted lines, defines edges that are not involved in any bicliques in $M$.}
 \label{fig:triparti_graphe_exemple}
 \end{figure}
 \FloatBarrier
@@ -1012,7 +1144,7 @@ The set of edges $E_{\overline{M}} = \{(A,3),(E,6)\}$, drawn with dotted lines, 
 \subsubsection{Step 2: Tripartite encoding}
 
 \noindent
-We construct a tripartite graph $G_{tri}=(W,X,Y,E_{WX},E_{WY},E_{XY} )$, such that:
+We construct a tripartite graph $G_{tri}=(W,X,Y,E_{WX},E_{WY},E_{XY} )$ such that:
 \begin{itemize}[noitemsep]
 \item Each biclique $m_n = (X_n, Y_n)$ of $M$ is \textit{captured} by a vertice $n \in W$. Thus, we link $n$ to all vertices in $X_n$ and $Y_n$. Formally, the neighbourhood of vertex $n$ is equal to $N(n) = X_n \cap Y_n$. 
 \item $E_{XY} = E_{\overline{M}}$
@@ -1039,7 +1171,7 @@ width=0.6\columnwidth]{img/triparti_green_biclique.pdf}
 \centering
 \includegraphics[trim={0cm 0.6cm 0cm 0cm},clip,
 width=0.8\columnwidth]{img/triparti_graphe_exemple_final.pdf}
-\caption{Tripartite graph ${G_{tri}}$ encoding the maximal bicliques of $G_{bip}$. Each vertices of set $W$ encodes a maximal biclique of $G_{bip}$. Edges in $E_{XY}$ are the dotted edges in $G_{bip}$. Their label "0" is a arbitrary value meaning that the edge doesn't encode any biclique.}
+\caption{Tripartite graph ${G_{tri}}$ encoding the maximal bicliques of $G_{bip}$. Each vertices of set $W$ encodes a maximal biclique of $G_{bip}$. Edges in $E_{XY}$ are the dotted edges in $G_{bip}$. Their label "0" is a arbitrary value meaning that the edges aren't encoding any biclique.}
 \label{fig:triparti_graphe_exemple_final}
 \end{figure}
 \FloatBarrier
@@ -1051,7 +1183,7 @@ As for the bipartite version of the configuration model, we will consider half-e
 \begin{figure}[h]%[h!]
 \centering
 \includegraphics[trim=0cm 7cm 0cm 0cm,clip,width=0.7\columnwidth]{img/vincent.pdf}
-\caption{Same tripartite graph $G_{tri}$ but with visible stubs. Each label is represented with a unique pair of interlockable symbols.}
+\caption{The same tripartite graph $G_{tri}$ but with visible stubs. Each label is represented with a unique pair of interlockable symbols.}
 \label{fig:vincent}
 \end{figure}
 \FloatBarrier
@@ -1059,7 +1191,7 @@ As for the bipartite version of the configuration model, we will consider half-e
 \begin{figure}[h]%[h!]
 \centering
 \includegraphics[trim=0cm 0.3cm 0cm 0.5cm,clip,width=0.4\columnwidth]{img/pairable.pdf}
-\caption{Interlockable and some non-interlockable symbols of \ref{fig:vincent}. }
+\caption{Interlockable and some non-interlockable symbols of Fig.\ref{fig:vincent}. }
 \label{fig:pairable}
 \end{figure}
 \FloatBarrier
@@ -1091,7 +1223,7 @@ As for the bipartite version of the configuration model, we will consider half-e
 \end{figure}
 \FloatBarrier
 
-\subsubsection{Step 2: Bipartite projection}
+\subsubsection{Step 3: Bipartite projection}
 
 Then, the tripartite randomized graph ${G_{tri}}'$ is projected into its bipartite projection ${G_{bip}}'=(X,Y,E')$: vertices in $X$ and $Y$ that are connected to the same vertex $n$, with $n \in W$, forms a biclique in ${G_{bip}}'$. Edges in ${E_{XY}}'$ are simply added to $E'$
 
@@ -1103,33 +1235,191 @@ Then, the tripartite randomized graph ${G_{tri}}'$ is projected into its biparti
 \end{figure}
 \FloatBarrier
 
-Multiple edges 
+\subsubsection{Multiple edges}
+
+Multiple edges can appear during different steps of the tripartite model. In fact, during the randomization process, 2 stubs of a node $i$ can be connected to 2 other stubs of a node $j$. This is the "classical" case that also appears in unipartite and bipartite version of the Configuration Model. It induces a biclique size reduction if stubs from set $w$ is involved. 
+
+Furthermore, we can also have multiple edge while projecting ${G_{tri}}'$ into its bipartite graph ${G_{bip}}'$, between :
+
+\begin{itemize}[noitemsep]
+    \item A biclique edge and a non-biclique edge : this case is detectable in the tripartite level, by identifying triangles.
+    \item Two bicliques edges : this case occurs when two vertices in $W$ both share a vertex in $X$ and a vertex in $Y$. This case is also detectable in the tripartite level, by identifying cycles of length 4, such that $\{(n_1,x,n_2,y,n_1) \mid \{n_1,n_2\} \in W \wedge x \in X \wedge y \in Y)\}$, where $(n_1,x,n_2,y,n_1)$ refers to a hamiltonian path of the cycle.
+    \item The maximal biclique $(\{F,G\}, \{5,6\})$ (in yellow).
+\end{itemize}  
+
+%In ${G_{tri}}'$, i.e.
+%in ${G_{bip}}'$. 
 
 \begin{figure}[h]%[h!]
 \centering
 \includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/triparti_multiple_edges.pdf}
-\caption{Multiples edges in tripartite model. }
+\caption{Two possible multigraphs obtained after projection of alternative randomized tripartite graphs. \textbf{a)} Multiple edges between vertices A and 3. One edge were involved in biclique encoding, the other was not. \textbf{b)} Multiple edges between C and 5. Both of these edges were involved in biclique encoding}
+\label{fig:graphs}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[trim=0cm 0.5cm 0cm 0cm,width=0.7\columnwidth]{img/multiple_edges_explained.pdf}
+\caption{Patterns in tripartite graphs that form multiple edges in bipartite projection. 
+\textbf{a)} The triangle $\{\alpha,A,3\}$ is projected into 2 multiples edges between vertices A and 3. Informally, ${A,3} \subset N(\alpha)$ means that there is an edge $(A,3)$ in the bipartite projection, but there is already an edge $(A,3)$ in ${G_{tri}}'$.
+\textbf{a)} The cycle $(\beta,C,\gamma,5,\beta)$ is projected into 2 multiples edges between vertices C and 5. Informally, ${C,5} \subset (\beta)$ means that there is an edge $(C,5)$ in the bipartite projection, and similarly ${C,5} \subset N(\gamma)$ also means that there is an edge $(C,5)$.
+}
 \label{fig:graphs}
 \end{figure}
 \FloatBarrier
 
 
+\subsection{Metholodogy and purpose of the work}
+
+The purpose of this study is to tackle the realistic random graph model problem, by evaluating the relevance of the tripartite model as a possible generalized answer to this problem.
+
+The main questions to be adressed in our work are the following: for which features the tripartite model performs better or worse results than the classical bipartite configuration model, i.e. resultats closer to the ones calculated with the real-world network ? To what extend does this model preserve bicliques of the original bipartite graph ? Does it preserve other characteristics such as bipartite clustering coefficient, redundancy, density ? Eventually, in the unipartite projection level, are properties  - such as density or assortativity - preserved ? If not, what this model lacks to preserve those characteristics ? How can we improve it ? Finally, can the tripartite model be (or be extended to) a unified random bipartite graph model that can produce a realistic graph ?
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=1\columnwidth]{img/methodology.pdf}
+\caption{Models comparaison.}
+\label{fig:methodology}
+\end{figure}
+\FloatBarrier
+
+
+
+%For this purpose, e will compare our results to 
+Lorem ipsum
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=1\columnwidth]{img/mindmap.pdf}
+\caption{Models comparaison.}
+\label{fig:mindmap}
+\end{figure}
+\FloatBarrier
+
+%For this purpose, e will compare our results to 
+Lorem ipsum
+
+
+% Sinon, comment peut-on l'améliorer, qu'est ce qu'on peut observer d'autre ? 
+% resistant to 
+
+%evaluate the relevance of the tripartite model for m
+%
+%
+%tackle this realistic model for complex networks problem, by analyzing the purposed model. The aim of our work is to both validate and further current knowledge of this model, by examining other characteristics of real-world network such as redundancy, or clustering coefficient. 
+%
+%
+%
 
 
 
 
+%\subsection{Methodology}
 
-\subsection{Methodology}
 
 \chapter{Implementation}
 \minitoc
-\section{Organization of the program}
-\section{Graph modelisation}
+\section{Tools used and organization of the program}
+
+We choose to use Python 3.4 to implement our program. If fact, since our main problem is to evaluate the \textit{relevance} of the tripartite model ("prototyping"), performance is not a critical requirement at this stage of the model understanding. Using Python allows us to speed up the software development process and benefit from a robust standard library. Even if lower level languages such as C++ or C\# offer higher performance, Python provides a decent performance for our case of study: especially, it brings packages for high-performance mathematical operations (Numpy) and various librairies for data analysis and data visualisation (pandas, seaborn, matplotlib, etc.) that we will useful for the models comparaison part. For performance-critical code, it is still possible to call C/C++ code from a Python script. \\
+
+Once the project will be on its way to become an analytical tool or application, i.e. we would like to provide a tripartite model generator for external users or to do speed optimisation, it can be ported to more sophisticated performance-sensitive language such as C++. \\
+
+
+In order to keep a good understanding of measured properties and handling of our data structures, we didn't use any Python package for creation, manipulation and study of graphs and complex networks. All the functions have been made from scratch using the basics data structures provided by Python and the following list of packages:
+\begin{itemize}[noitemsep]
+    \item Numpy;
+    \item Basics data science librairies: pandas, matplotlib, seaborn.
+\end{itemize}
+
+We use Jupyter Notebook for the data analysis part and Github for code version control.
+
+% we tried memory management and 
+
+
 \section{Some implementation elements}
+
+\subsection{Graph modelisation}
+
+There is 2 ways to modelise a graph: by using an adjacency matrix or adjacency lists (Fig.\ref{fig:graph_representation}).
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=1\columnwidth]{img/graph_representation.pdf}
+\caption{Models comparaison.}
+\label{fig:graph_representation}
+\end{figure}
+\FloatBarrier
+
 
 \subsection{Finding maximal bicliques on bipartite graphs}
 
-\subsubsection{Kayaaslan}
+A preliminary step before implementing the tripartite model is finding all maximal bicliques of bipartite graphs. This problem is a variation of the MGBP (Maximal Biclique Generation Problem) NP-hard problem, which consists in  generating all the maximal bicliques of a given simple graph. This problem is particularly challenging in terms of execution time because it cannot be solved in polynomial time with respect to the graph size only \cite{eppstein}.  Informally, a graph can be small but contains more bicliques than a bigger graph containing 0 biclique. Thus, today, it only exists output sensitive algorithms so solve this problem: the running time depends on the size of the output, instead of / in addition to the size of the output.
+
+
+% already observed by Eppstein [18], the MBGP cannot be solved in polynomial time with respect to the input size, since
+%the size of the output can be exponentially large in n. VOIR ALEXE
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=1\columnwidth]{img/output_sensitive.pdf}
+\caption{Output sensitive algorithm. The firs graph contains more vertices and edges than the second one, but maximal biclique enumeration may takes more time for the second graph. Indeed, it contains 2 maximal bicliques while the first one doesn't contain any biclique.}
+\label{fig:output_sensitive}
+\end{figure}
+\FloatBarrier
+
+
+In our case of study, we will focus on a practical aspect of this problem. For a first implementation, we will study the FIND-ALL-MAXIMAL algorithm purposed by Enver Kayaaslan, which aims to enumerate all maximal bicliques in bipartite graphs. This algorithm is specified version for bipartite graph of the work done by Alexe et. al. \cite{alexe}, where the authors tackle the MGBP problem. E. Kayaaslan provides a practical algorithm that runs in polynomial time in respect to both input (i.e. graph) and output (maximal bicliques) size with a naive implementation.
+
+In the following, we will go through main notions and theorems defined in the article. For each of them, we give an informal explanation and example.
+
+\subsubsection{Consensus set}  
+
+Given a bipartite graph $G = (X,Y,E)$, for a subset $S_x \subseteq X$ ($S_y \subseteq Y$), the consensus set $P_y(S_x)$ ($P_x(S_y)$) is defined as the intersection of neighbor set of each vertex $x_i \in S_x$ ($y_j \in S_y$).\cite{kayaaslan} Formally:
+
+$$ P_y(S_x) = \bigcap\limits_{x_i \in x_i}N_y(x_i)$$ 
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.\columnwidth]{img/consensus_set.pdf}
+\caption{Output}
+\label{fig:consensus_set}
+\end{figure}
+\FloatBarrier
+
+
+\subsubsection{Theorem1}  
+
+$(S_x,S_y) \neq \o$ is a maximal biclique $\Leftrightarrow$ $S_y = P_y(S_x)$ and $S_x = Px_(S_y)$
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.5\columnwidth]{img/theoreme1.pdf}
+\caption{Output}
+\label{fig:theoreme1}
+\end{figure}
+\FloatBarrier
+
+
+\subsubsection{Theorem2}  
+
+For any $S_y \subseteq Y$ such that $P_x(S_y) \neq \o$ $P_y(P_x(S_y))$ is a maximal biclique. Similarly, for any $S_x \subseteq X$ such that $P_y(S_x) \neq \o$, $(P_x(P_y(S_x)), P_y(S_x))$ is a maximal biclique. 
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[width=0.3\columnwidth]{img/theoreme2.pdf}
+\caption{Output}
+\label{fig:theoreme2}
+\end{figure}
+\FloatBarrier
+
+
 \subsubsection{Damaschke}
 
 $\sigma(A) = \cap_{v\in A} N(v)$
@@ -1137,131 +1427,275 @@ $$\phi(A) = \sigma(\sigma(A))$$
 
 $$\phi(\phi(A)) = \phi(A)$$
 
+\subsection{Returning a set of non-overlapping maximal bicliques}
+
+
 
 \subsection{Tripartite encoding}
+
+\subsection{Paths calculation}
+
+Useful for: things related to connected components, distance, path length
+
+\subsubsection{Breadth First Search}
+\subsubsection{Depth First Search}
+
 \subsection{How to use the code}
 \subsection*{Some improvements ideas}
 
 \chapter{Experiments, analysis and results}
 \minitoc
 \section{Datasets used}
+
+\begin{table}[h]
+\begin{tabular}{ccccc}
+\hline
+dataset & nb top vertices & nb bottom vertices & nb edges & nature        \\ \hline
+hepB & 24663 & 49214 & 121363 & \begin{tabular}[c]{@{}c@{}}scientific collaborations \\ on hepatitis B\end{tabular}                                       \\ \hline
+arxiv   & 38741           & 16726              & 58595    & co-authorship \\ \hline
+bpse & 1     & 6     & 3      & \begin{tabular}[c]{@{}c@{}}proteins of Burkholderia \\ pseudomallei bacteria involve \\ in metabolic pathway\end{tabular} \\ \hline
+\end{tabular}
+\caption{Some datasets used for experimentation.}
+\label{tab:dataset}
+\end{table}
+\FloatBarrier
+
 \section{Results}
-\subsection{Bipartite graphs analysis}
 
 \subsubsection{Appendix - how to read plot of this section}
 
 We will start this section with a reminder of the main statistical notions used in the following. The aim is not to give a deep mathematical description of all the concepts used there, but rather hints and sufficient intuition to interpret and understand their relevance in our work. 
 
-Distribution
+Let's consider the following graph. 
 
-Cumulative distribution
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[trim=0cm 0.6cm 0.2cm 0.2cm,width=0.4\columnwidth]{img/graphe_exemple_stats.pdf}
+\caption{An unipartite graph with degree for every vertex (orange)}
+\label{fig:graphe_exemple_stats}
+\end{figure}
+\FloatBarrier
 
 
-Inverse cumulative distribution
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\hline
+degree & distribution & CDF & ICDF \\ \hline
+1      & 1     & 1   & 8    \\
+2      & 4     & 5   & 7    \\
+3      & 1     & 6   & 3    \\
+4      & 2     & 8   & 2    \\ \hline
+\end{tabular}
+\caption{Degree distribution, Cumulative degree distribution function (CDF) and Inverse cumulative degree distribution (ICDF) of the graph in Fig. \ref{fig:graphe_exemple_stats}}
+\label{tab:my-table}
+\end{table}
+
+\noindent
+We define 3 main notions:
+\begin{itemize}[noitemsep]
+    \item \textbf{Distribution}: a distribution function $f$ is a function that shows the possible values for a variable $X$ and how often they occur. In our example, we are looking at the degree of each vertex of the graph ($X$). For each degree $x$, we count how many vertices have this degree. For example, the table tells us that 4 vertices are degree 4.
+    \item \textbf{Cumulative distribution function (CDF)}: the cumulative distribution function $F_X$ is the probability that a variable $X$, evaluated at $x$, will take a value less than or equal to x. Formally:
+$$F_X(x) = P(X \leq x)$$ 
+where the right-hand side represents the probability that the random variable $X$ takes on a value less than or equal to $x$.In \ref{tab:my-table}, CDF of a degree $x$ is calculated by summing all the degrees $\leq x$. For instance, for $x=3$, $F_X(3) = f(1)+f(2)+f(3)=1+4+1=6. $
+
+
+    \item \textbf{Inverse Cumulative distribution function (ICDF)}: the inverse cumulative distribution function ${F_X}^{-1}$is the probability that a variable $X$, evaluated at $x$, will take a value greater than or equal to x. Formally:
+$${F_X}^{-1}(x) = P(X \geq x)$$ 
+where the right-hand side represents the probability that the random variable $X$ takes on a value greater than or equal to $x$. In \ref{tab:my-table}, ICDF of a degree $x$ is calculated by summing all the degrees $\geq x$. For instance, for $x=3$, $F_X(3) = f(3)+f(4)=1+2=3.$
+\end{itemize}
+
+\bigbreak
+In some cases, it is more relevant to consider cumulative distributions (CDF and/or ICDF) rather than classical  distribution. In fact, instead of plotting the fraction of samples that have \textit{exactly} $x$ as the measured value, cumulative distributions plot for each $x$ the \textit{fraction} of samples having a measured value lower than or equal to $x$ for CDF, and greater than or equal to $x$ for ICDF. 
+
+\medbreak
+This approach is particularly interesting when $x$ can take real values and not only integers. Is this case, it is more relevant to estimate the number of samples that have an  $X \geq x$ or $X \leq x$ that knowing how many samples have its $X$ exactly equal to a specific real value. Moreover, it is then easier to estimate the number of samples with a low or high measured value.\cite{latapy}
+
+
+
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=.5\textwidth]{img/example_dist}\hfill
+\includegraphics[width=.5\textwidth]{img/example_cdf}\hfill
+\includegraphics[width=.5\textwidth]{img/example_icdf}
+
+\caption{Distribution function (top left), CDF (top right) and ICDF (bottom) for degrees of the graph in Fig.\ref{fig:graphe_exemple_stats}. For $x=1$, the figures can be interpreted as: - Distribution: the graph has 4 vertices with degree $x=1$; - CDF: 5 vertices have degree less or equal to $1$; - ICDF: 7 vertices have degree greater or equal to $1$. }
+\label{fig:figure3}
+
+\end{figure}
+
+\newpage
+\subsection{Results for bipartite graphs}
+
+Since we are not doing network analysis but random graph model analysis and comparison, in our plots we are more interested in understanding how the curves behave than having \textit{exact} values is y-axis given an $x$. Therefore, we have normalized CDF and ICDF values to 0-1 range by simply dividing all the values by the max value. Normalizing the data to range 0-1 will simplify the percentage distribution study and comparison between results obtained with different datasets. 
+
+Note: When a log-log scale is used, since $log(0)$ is not defined, the minimum x-axis has been set to a positive number above 0 ($10^{5}$).
+
+\subsubsection{Degrees}
 
 
 Dataset "arxiv"
 
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_40_output_0.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
-
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_41_output_0.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
-
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_42_output_0.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
-
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_45_output_0.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
 
 
 \begin{figure}[h]%[h!]
 \centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_67_output_0.png}
-\caption{}
-\label{fig:graphs}
+\includegraphics[trim=0cm 0.4cm 1cm 0cm,width=1\columnwidth]{img/exported/secured/arxiv5/degree_all3.jpg}
+\caption{Inverse cumulative distribution of degrees. Left: top nodes. Right: bottom nodes.}
+\label{fig:degree_all}
 \end{figure}
 \FloatBarrier
 
+First, let's plot the inverse cumulative function of degree distribution (Fig. \ref{fig:CDF_deg}). In particular, one may want to detect \textit{small} variation in high degree distribution. In fact, since real-networks usually have a skewed degree distribution, we want to ensure that after any randomization process, we still have few vertices with high degree distribution at the tail: those nodes are very important for network analysis. That is the reason why we choose to plot ICDF in a log-log instead of CDF: since ICDF decreases, the more we move to the right of the plot, the more small variations on y-axis are noticeable as curve slope variation is sensitive to small variation due to logarithmic scale. Thus, plotting ICDF in a log-log scale does exactly what we want in this case: "compress"/minimize variations of small degrees and detect small distribution variation of higher degrees. 
+On the contrary, if one is interested in studying small variations of low degrees, he should plot the information with CDF on a log-log scale. 
 
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.9\columnwidth]{img/exported/secured/arxiv1/icdf_biclique_size.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
+\bigbreak
 
+\noindent
+\textbf{Observation and interpretation}:
 
-\subsection{Unipartite graphs analysis}
+\begin{itemize}[noitemsep]
+    \item As expected from a real-world network, the degree distribution is very skewed for both top and bottom nodes. In fact, as $F^{-1}(10) \approx 10^{-1} \approx 0.1 \approx 10 \%$ for top nodes of the real network, it means that $10 \%$ of the vertices have degree $\geq 10$. Hence, it means that approximately $90 \%$ ($1-0.1 = 0.9$) of vertices have degree lying in the open interval $[1,10)$. 
+\end{itemize}  
 
-- - - - - - - - - -
  
-A déplacer et/ou mettre en annexe
 
-BPSE:
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_39_output_0.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
+We have also computed a random graph using a naive approach of the tripartite model. In this approach, randomization process is differs since bicliques edges are not labeled; in fact, we simple apply 3 bipartite configuration model: one for the graph induced by edges $E_{WX}$, one for the one induced by $E_{XY}$ and one induced by $E_{WY}$.  A more detail explanation of this approach is provided in the appendix. 
+In Fig. \ref{fig:degree_all} clearly appears that this naive model results in a worse degree estimation than the tripartite model with any heuristic. This observation suggests that the "selective" edge matching required by the tripartite model (two stubs from different sets can be randomly connected only if they stem from edges that have the same label in ${G_{tri}}$) is necessary to preserve the degree distribution of the original network. 
+
 
 \begin{figure}[h]%[h!]
 \centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_40_output_0.png}
-\caption{}
-\label{fig:graphs}
+\includegraphics[trim=0cm 0.4cm 1cm 0cm,width=1\columnwidth]{img/exported/secured/arxiv5/redundancy_all3.jpg}
+\caption{Inverse cumulative distribution of redundancy. Left: top nodes. Right: bottom nodes.}
+\label{fig:redundancy_all}
 \end{figure}
 \FloatBarrier
 
 
 \begin{figure}[h]%[h!]
 \centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_41_output_0.png}
+\includegraphics[trim=0cm 0.4cm 1cm 0cm,width=1\columnwidth]{img/exported/secured/arxiv5/cc_bullet3.jpg}
+\caption{Inverse cumulative distribution of redundancy. Left: top nodes. Right: bottom nodes.}
+\label{fig:redundancy_all}
+\end{figure}
+\FloatBarrier
+
+
+%simple random edge matchings is perform between 
+%
+%a simple bipartite configuration model is computed between edges 
+%
+%3 bipartite configuration model (one for edges between WX, XY and WY) and them pro A more detail explanation is provided in 
+%
+%
+%- pourquoi on  a toujours moins de trucs à la queue
+%
+
+
+
+\begin{figure}[h]%[h!]
+\centering
+\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.7\columnwidth]{img/exported/secured/arxiv5/compo_size.png}
 \caption{}
-\label{fig:graphs}
+\label{fig:compo_size}
 \end{figure}
 \FloatBarrier
 
 
 \begin{figure}[h]%[h!]
 \centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_66_output_0.png}
+\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.8\columnwidth]{img/exported/secured/arxiv5/biclique_size.png}
 \caption{}
-\label{fig:graphs}
+\label{fig:biclique_size}
 \end{figure}
 \FloatBarrier
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_42_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_45_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/arxiv1/new_tripartite_model_tools_cell_67_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.9\columnwidth]{img/exported/secured/arxiv1/icdf_biclique_size.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
 
-\begin{figure}[h]%[h!]
-\centering
-\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.9\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_72_output_0.png}
-\caption{}
-\label{fig:graphs}
-\end{figure}
-\FloatBarrier
-
+%
+%\subsection{Unipartite graphs analysis}
+%
+%- - - - - - - - - -
+% 
+%A déplacer et/ou mettre en annexe
+%
+%BPSE:
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_39_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_40_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_41_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.6\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_66_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
+%\begin{figure}[h]%[h!]
+%\centering
+%\includegraphics[trim=0cm 0.4cm 0cm 0cm,width=0.9\columnwidth]{img/exported/secured/bpse1/new_tripartite_model_tools_cell_72_output_0.png}
+%\caption{}
+%\label{fig:graphs}
+%\end{figure}
+%\FloatBarrier
+%
 
 
 \chapter{Conclusion and perspective}
@@ -1269,7 +1703,7 @@ BPSE:
 %
 %lorem rtrt \cite{coupechoux} eerezrezr \cite{fabien_lionel} gfgg \cite{coupechoux} gfgfg
 
-
+%Our experiments show promising results 
 %\chapter*{Bibliography}
 
 \nocite{*}
@@ -1278,7 +1712,7 @@ BPSE:
 
 
 
-%\listoffigures
+\listoffigures
 
 %\listoftables
 
@@ -1350,3 +1784,5 @@ BPSE:
 %    \item The maximal biclique $(\{C,D,E\}, \{3,4,5\})$ (in red);
 %    \item The maximal biclique $(\{F,G\}, \{5,6\})$ (in yellow).
 %\end{itemize}  
+
+%  junix ./new_tripartite_model_tools.ipynb -o rapport/img/exported/arxiv5
