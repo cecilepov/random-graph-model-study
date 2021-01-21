@@ -3,16 +3,13 @@
 
 """
 This module provides a simple class implementation for undirected graphs.
-
 A graph is a data structure composed of vertices and edges.
 It also provides features computation for network analysis.
-
 Typical usage example:
     vertices = [0,1,2,3]
     edges    = [[0,1],[2,3],[0,3]]
     my_graph = Graph(vertices, edges)
     my_graph.get_connected_components()
-
 """
 
 # Import the modules needed to run the code.
@@ -49,14 +46,15 @@ __email__   = "cecile.pov@gmail.com"
 
 
 class Graph(ABC):
-    """This class is a implementation for undirected graph.
-    A graph is a data structure composed of vertices and edges.
-
-    Attributes:
-        vertices (list of int): list of vertices id.
-        edges (list of list): list of edges.
 
     """
+    This class is a general implementation for undirected and unweighted k-partite graphs.
+    A graph is a data structure composed of vertices and edges.
+    A k-partite graph is graph whose vertices can be divided into k distincts sets.
+    Attributes:
+        nb_sets : number of sets
+    """
+
     def __init__(self, nb_sets):
         nb_sets = all
 
@@ -102,7 +100,6 @@ class Graph(ABC):
     def get_all_degrees(self,set1):
         """
         Returns a dictionary with vertices id as keys, and degrees as values.
-
         """
         return {key: len(value) for key, value in set1.items()}
 
@@ -193,7 +190,7 @@ class Graph(ABC):
 
 
 
-# MARCHE POUR GRAPHE SIMPLE !!
+# Works for simple graphs
 
     # def depth_first_search(self, vertex, cc_vertex, visited,set1):
     #     """

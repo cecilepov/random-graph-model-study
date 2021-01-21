@@ -1,0 +1,108 @@
+\begin{thebibliography}{10}
+
+\bibitem{klaas}
+Computational analysis of functional connectivity between areas of primate
+  cerebral cortex.
+\newblock {\em Philosophical Transactions: Biological Sciences},
+  355(1393):111--126, 2000.
+
+\bibitem{alexe}
+Gabriela Alexe, Sorin Alexe, Yves Crama, Stephan Foldes, Peter Hammer, and
+  Bruno Simeone.
+\newblock Consensus algorithms for the generation of all maximal bicliques.
+\newblock 09 2003.
+
+\bibitem{barabasi}
+Albert-L{\'a}szl{\'o} Barab{\'a}si and R{\'e}ka Albert.
+\newblock Emergence of scaling in random networks.
+\newblock {\em Science}, 286(5439):509--512, 1999.
+
+\bibitem{bouchard}
+Martin Bouchard and Aili Malm.
+\newblock Social network analysis and its contribution to research on crime and
+  criminal justice.
+\newblock 11 2016.
+
+\bibitem{centola}
+Damon Centola.
+\newblock {\em How Behavior Spreads: The Science of Complex Contagions}.
+\newblock Princeton University Press, 2018.
+
+\bibitem{coupechoux}
+{\'E}milie Coupechoux and Fabien Tarissan.
+\newblock {Un mod{\`e}le pour les graphes bipartis al{\'e}atoires avec
+  redondance}.
+\newblock In {\em {4{\`e}me Journ{\'e}es Mod{\`e}les et l'Analyse des
+  R{\'e}seaux : Approches Math{\'e}matiques et Informatique (MARAMI'13)}},
+  Saint-Etienne, France, October 2013.
+
+\bibitem{dallasta}
+Luca Dall'Asta.
+\newblock {\em {Dynamic Phenomena on Complex Networks}}.
+\newblock Theses, {Universit{\'e} Paris Sud - Paris XI}, September 2006.
+
+\bibitem{damaschke}
+Peter Damaschke.
+\newblock Enumerating maximal bicliques in bipartite graphs with favorable
+  degree sequences.
+\newblock {\em Information Processing Letters}, 114:317--321, June 2014.
+
+\bibitem{dunne}
+Jennifer Dunne, Richard Williams, and Neo Martinez.
+\newblock Network structure and biodiversity loss in food webs: Robustness
+  increases with connectance.
+\newblock {\em Ecology Letters}, 5:558 -- 567, 07 2002.
+
+\bibitem{eppstein}
+D.~Eppstein.
+\newblock Arboricity and bipartite subgraph listing algorithms.
+\newblock {\em Inf. Process. Lett.}, 51:207--211, 1994.
+
+\bibitem{faloutsos}
+Michalis Faloutsos, Petros Faloutsos, and Christos Faloutsos.
+\newblock On power-law relationships of the internet topology.
+\newblock SIGCOMM '99, page 251–262, New York, NY, USA, 1999. Association for
+  Computing Machinery.
+
+\bibitem{jeong}
+Hawoong Jeong, S.P. Mason, Albert-Laszlo Barabasi, and Zoltan Oltvai.
+\newblock Lethality and centrality in protein networks.
+\newblock {\em Nature}, 411:41--2, 06 2001.
+
+\bibitem{kayaaslan}
+Enver Kayaaslan.
+\newblock On enumerating all maximal bicliques of bipartite graphs.
+\newblock pages 105--108, 01 2010.
+
+\bibitem{latapy}
+Matthieu Latapy, Cl{\'e}mence Magnien, and Nathalie Del~Vecchio.
+\newblock {Basic Notions for the Analysis of Large Two-mode Networks}.
+\newblock volume~30, pages 31--48. {Elsevier}, January 2008.
+
+\bibitem{latapy_viard}
+Matthieu Latapy and Tiphaine Viard.
+\newblock Complex networks and link streams for the empirical analysis of large
+  software.
+\newblock In Gianfranco Ciardo and Ekkart Kindler, editors, {\em Application
+  and Theory of Petri Nets and Concurrency}, pages 40--50, Cham, 2014. Springer
+  International Publishing.
+
+\bibitem{newman}
+M.~E.~J. Newman, S.~H. Strogatz, and D.~J. Watts.
+\newblock Random graphs with arbitrary degree distributions and their
+  applications.
+\newblock {\em Phys. Rev. E}, 64:026118, Jul 2001.
+
+\bibitem{fabien_lionel}
+Fabien Tarissan and Lionel Tabourier.
+\newblock A random model that relies on maximal bicliques to preserve the
+  overlaps in bipartite networks.
+\newblock In {\em {8th International Conference on Complex Networks and their
+  Applications}}, Lisbonne, Portugal, December 2019.
+
+\bibitem{watts_strogatz}
+Duncan~J. Watts and Steven~H. Strogatz.
+\newblock {\em {Collective dynamics of 'small-world' networks}}, volume 393.
+\newblock Nature Publishing Group, June 1998.
+
+\end{thebibliography}
