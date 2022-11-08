@@ -1,15 +1,24 @@
-# Tripartite model study
+# Tripartite graph model study
+
+End-of-study **research internship as LIP6**, Sorbonne University and CNRS (French National Scientific Research Center) lab. 
+
+### Research team:
+- ComplexNetworks team (https://www.complexnetworks.fr/)
+
+### Supervisors:
+- Prof. Lionel Tabourier
+- Prof. Fabien Tarissan 
 
 ## Abstract
 
-Real-world networks share non-trivial properties, such as a skewed degree-distribution, a low global
+**Real-world networks** share non-trivial properties, such as a skewed degree-distribution, a low global
 density, a high local density, etc. However, existing random graph models do not capture all the properties
-of real world networks at the same time. In particular, the bipartite configuration model achieves in
+of real world networks at the same time. In particular, the **bipartite configuration model** achieves in
 preserving a degree distribution close to the original network one, but fails in generating graphs that
 keeps the overlapping structures.
 
-F. Tarissan & L. Tabourier proposed a random model [1][2] that relies on maximal bicliques to preserve
-overlaps in bipartite networks, by exploiting the tripartite version of the configuration model. The purpose of this study is to tackle the realistic random graph model problem, by evaluating the relevance of the tripartite model as a possible generalized answer to this issue. We will both validate and further current knowledge of this model, by examining other characteristics of real-world network.
+F. Tarissan & L. Tabourier proposed a random model [1][2] that relies on **maximal bicliques** to preserve
+overlaps in bipartite networks, by exploiting the tripartite version of the configuration model. The purpose of this study is to **tackle the realistic random graph model problem**, by evaluating the relevance of the tripartite model as a possible generalized answer to this issue. We will both validate and further current knowledge of this model, by examining other characteristics of real-world network.
 
 Main classes:
 - UnipartiteGraph.py
